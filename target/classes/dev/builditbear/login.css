@@ -1,0 +1,36 @@
+.app-container {
+  -fx-padding: 4.5em;
+  -fx-border-insets: 3.5em;
+  -fx-background-insets: 3.5em;
+  /* -fx-border-color: black; */
+  -fx-border-radius: 1em;
+  -fx-background-radius: 1em;
+  -fx-background-color: #b8b8b8;
+}
+
+.timezone-info {
+  -fx-background-color: white;
+  -fx-background-radius: 0.5em;
+  -fx-border-radius: 0.5em;
+  -fx-padding: 0.3em;
+}
+
+.logo {
+  -fx-border-radius: 0.5em;
+  -fx-background-radius: 0.5em;
+  -fx-border-color: black;
+}
+
+.sign-in {
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, #ecf3f4, 15, 0.1, 0, 0);
+}
+
+.sign-in:armed {
+  -fx-background-color: silver;
+  -fx-text-fill: white;
+}
+
+.sign-in:hover {
+  -fx-effect: innershadow(gaussian, #0d99b9, 3, 0, 0, 0);
+}
