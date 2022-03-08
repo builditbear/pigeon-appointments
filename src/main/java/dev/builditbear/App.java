@@ -1,5 +1,6 @@
 package dev.builditbear;
 
+import dev.builditbear.db_interface.ConnectionManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +18,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //640 x 480
+        ConnectionManager.openConnection();
         scene = new Scene(loadFXML("login"), 480, 480);
         // Remove focus from the UserID textfield, which is focused by default, allowing the prompt text to be seen.
         scene.getRoot().requestFocus();

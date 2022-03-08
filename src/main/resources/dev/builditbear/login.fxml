@@ -12,7 +12,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" styleClass="app-container" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.builditbear.controller.LoginController">
    <children>
-      <Label styleClass="timezone-info" text="Your Local Time: 3:45 UTC" />
+      <Label fx:id="timeLabel" styleClass="timezone-info" />
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <ImageView fx:id="logo" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
@@ -29,19 +29,19 @@
          <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <TextField promptText="UserID" styleClass="textfield" />
+                  <TextField fx:id="userField" promptText="UserID" styleClass="textfield" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <TextField promptText="Password" styleClass="textfield" />
+                  <TextField fx:id="pwField" promptText="Password" styleClass="textfield" />
                </children>
             </HBox>
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" prefWidth="150.0" styleClass="sign-in" text="Login" textAlignment="CENTER">
+            <Button fx:id="loginButton" mnemonicParsing="false" onMouseClicked="#onLoginClicked" prefWidth="150.0" styleClass="sign-in" text="Login" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

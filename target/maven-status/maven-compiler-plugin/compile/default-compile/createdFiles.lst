@@ -1,3 +1,6 @@
+dev/builditbear/controller/LoginController$1.class
+dev/builditbear/db_interface/ConnectionManager.class
+dev/builditbear/utility/TimeConversion.class
 module-info.class
 dev/builditbear/controller/LoginController.class
 dev/builditbear/App.class
