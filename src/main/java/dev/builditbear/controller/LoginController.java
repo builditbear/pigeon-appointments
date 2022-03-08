@@ -51,7 +51,8 @@ public class LoginController implements Initializable{
         Image logoImage = new Image("/dev/builditbear/logo-with-label.png");
         clipLogo(logoImage);
 
-        // Start a timer routine that will update LocalDateTime every second.
+        /* Start a timer routine that will update LocalDateTime every second, such that the user is always viewing
+           the current time to the second. */
         new AnimationTimer() {
             private long timeOfLastTick = 0;
             @Override
