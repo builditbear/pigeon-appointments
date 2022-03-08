@@ -28,6 +28,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
 
 /**
  * Handles user interaction with the app's login screen.
@@ -58,7 +59,7 @@ public class LoginController implements Initializable{
                 if(now - timeOfLastTick >= 1_000_000L) {
                     timeOfLastTick = now;
                     currentLdt = LocalDateTime.now();
-                    timeLabel.setText("UTC Time: " + TimeConversion.printUTCTime(currentLdt));
+                    timeLabel.setText("Local Time: " + TimeConversion.printZonedLocalTime(currentLdt));
                 }
             }
         }.start();
