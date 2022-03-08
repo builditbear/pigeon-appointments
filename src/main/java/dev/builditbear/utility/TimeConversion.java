@@ -16,13 +16,19 @@ public class TimeConversion {
 
     /**
      * Converts a given LocalDateTime object's time into a formatted String in UTC time.
-     * @param ldt A LocalDateTime object to convert to a formatted String.
-     * @return A String value describing the time represented by currentLdt in the format "hh:mm:ss a".
+     * @param ldt A LocalDateTime object used to generate the formatted output String.
+     * @return A String describing the time represented by ldt in the format "hh:mm:ss a", where "a" is AM or PM.
      */
     public static String printUTCTime(LocalDateTime ldt) {
         return ldt.atZone(ZoneOffset.ofHours(-8)).format(standard.withZone(ZoneOffset.UTC));
     }
 
+    /**
+     * Converts a given LocalDateTime object's time into a formatted String depicting the local time and timezone.
+     * @param ldt A LocalDateTime object used to generate the formatted output String.
+     * @return A String describing the local time represented by ldt in the format "hh:mm:ss a z", where "a" is AM or PM,
+     * and "z" is the local timezone ID.
+     */
     public static String printZonedLocalTime(LocalDateTime ldt) {
         ZonedDateTime zdt = ldt.atZone(TimeZone.getDefault().toZoneId());
         return zdt.format(showTimezone);
