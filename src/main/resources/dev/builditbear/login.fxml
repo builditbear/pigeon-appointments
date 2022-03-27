@@ -29,19 +29,19 @@
          <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <TextField fx:id="userField" promptText="UserID" styleClass="textfield" />
+                  <TextField fx:id="userField" promptText="%username" styleClass="textfield" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <TextField fx:id="pwField" promptText="Password" styleClass="textfield" />
+                  <TextField fx:id="pwField" promptText="%password" styleClass="textfield" />
                </children>
             </HBox>
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="loginButton" mnemonicParsing="false" onMouseClicked="#onLoginClicked" prefWidth="150.0" styleClass="sign-in" text="Login" textAlignment="CENTER">
+            <Button fx:id="loginButton" mnemonicParsing="false" onMouseClicked="#onLoginClicked" prefWidth="150.0" styleClass="sign-in" text="%login" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

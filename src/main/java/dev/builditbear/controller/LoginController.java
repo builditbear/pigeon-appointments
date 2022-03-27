@@ -1,5 +1,6 @@
 package dev.builditbear.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.util.ResourceBundle;
 import dev.builditbear.App;
 import dev.builditbear.db_interface.ConnectionManager;
 import dev.builditbear.utility.TimeConversion;
+import dev.builditbear.utility.uiManager;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +29,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
@@ -42,9 +46,9 @@ public class LoginController implements Initializable{
     private TextField userField;
     @FXML
     private TextField pwField;
-
-    private LocalDateTime currentLdt = LocalDateTime.now();
+    @FXML
     private Button loginButton;
+    private LocalDateTime currentLdt = LocalDateTime.now();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -60,7 +64,7 @@ public class LoginController implements Initializable{
                 if(now - timeOfLastTick >= 1_000_000L) {
                     timeOfLastTick = now;
                     currentLdt = LocalDateTime.now();
-                    timeLabel.setText("Local Time: " + TimeConversion.printZonedLocalTime(currentLdt));
+                    timeLabel.setText(resourceBundle.getString("localTime") + ": " + TimeConversion.printZonedLocalTime(currentLdt));
                 }
             }
         }.start();
@@ -102,7 +106,11 @@ public class LoginController implements Initializable{
         boolean authenticationSuccessful = ConnectionManager.authenticateLogin(username, password);
 
         if(authenticationSuccessful) {
-           new Alert(Alert.AlertType.INFORMATION, "User successfully authenticated.").showAndWait();
+            try{
+                uiManager.loadScene("customers",(Stage) loginButton.getScene().getWindow(),"1300x800");
+            } catch(IOException ex) {
+                System.out.println("An IO exception occurred! Make sure that the view you're attempting to load exists.");
+            }
         }
     }
 

@@ -6,16 +6,16 @@ import java.time.LocalDateTime;
 public class FirstLevelDivision {
     private final int id;
     private final String division;
-    private final LocalDateTime dateTime;
+    private final LocalDateTime createDate;
     private final String createdBy;
     private final Timestamp lastUpdate;
     private final String lastUpdatedBy;
     private final int countryId;
 
-    public FirstLevelDivision(int id, String division, LocalDateTime dateTime, String createdBy, Timestamp lastUpdate, String lastUpdatedBy, int countryId) {
+    public FirstLevelDivision(int id, String division, LocalDateTime createDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy, int countryId) {
         this.id = id;
         this.division = division;
-        this.dateTime = dateTime;
+        this.createDate = createDate;
         this.createdBy = createdBy;
         this.lastUpdate = lastUpdate;
         this.lastUpdatedBy = lastUpdatedBy;
@@ -31,7 +31,7 @@ public class FirstLevelDivision {
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return createDate;
     }
 
     public String getCreatedBy() {

@@ -1,25 +1,71 @@
 package dev.builditbear.model;
 
-public class Customer {
-    private static int idCounter = 1;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
+public class Customer {
     private int id;
     private String name;
     private String address;
     private String postalCode;
-    private String phoneNumber;
-    private FirstLevelDivision firstLevelDivision;
-    private Country country;
+    private String phone;
+    private LocalDateTime createDate;
+    private String createdBy;
+    private Timestamp lastUpdate;
+    private String lastUpdatedBy;
+    private int divisionId;
 
-    public Customer(String name, String address, String postalCode, String phoneNumber) {
-        this.id = idCounter;
-        idCounter++;
+    public Customer(int id, String name, String address, String postalCode, String phone, LocalDateTime createDate,
+                    String createdBy, Timestamp lastUpdate, String lastUpdatedBy, int divisionId) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.postalCode = postalCode;
-        this.phoneNumber = phoneNumber;
-        firstLevelDivision = null;
-        country = null;
+        this.phone = phone;
+        this.createDate = createDate;
+        this.createdBy = createdBy;
+        this.lastUpdate = lastUpdate;
+        this.lastUpdatedBy = lastUpdatedBy;
+        this.divisionId = divisionId;
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public int getDivisionId() {
+        return divisionId;
     }
 }

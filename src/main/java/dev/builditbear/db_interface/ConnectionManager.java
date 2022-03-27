@@ -1,32 +1,41 @@
 package dev.builditbear.db_interface;
 
+import dev.builditbear.App;
+import dev.builditbear.model.Customer;
 import javafx.scene.control.Alert;
 import java.sql.*;
+import java.util.ResourceBundle;
 
-public class ConnectionManager {
+public abstract class ConnectionManager {
     private static final String dbURL = "jdbc:mysql://localhost:3306/client_schedule";
     private static final String dbUsername = "sqlUser";
     private static final String dbPassword = "Passw0rd!";
     private static Connection connection = null;
 
+    /**
+     * Establishes and saves a connection to the database described in dbURL.
+     */
     public static void openConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         } catch(ClassNotFoundException e) {
-            System.out.println("The database driver was not found!");
+            System.out.println(App.getBundle().getString("db_driver_not_found"));
             e.printStackTrace();
         } catch(SQLException e) {
-            System.out.println("Failed to connect to db.");
+            System.out.println(App.getBundle().getString("db_connection_failure"));
             e.printStackTrace();
         }
     }
 
+    /**
+     * Closes the current connection to the database described in dbURL variable.
+     */
     public static void closeConnection() {
         try {
             connection.close();
         } catch(SQLException e) {
-            System.out.println("Failed to close connection to db!");
+            System.out.println(App.getBundle().getString("db_connection_close_failure"));
         }
     }
 
@@ -38,6 +47,8 @@ public class ConnectionManager {
      * Validates the given username and password against the database records.
      */
     public static boolean authenticateLogin(String username, String password){
+        ResourceBundle bundle = App.getBundle();
+
         PreparedStatement validateUser;
         PreparedStatement validatePassword;
         try {
@@ -60,22 +71,22 @@ public class ConnectionManager {
                 return true;
             }
         } catch(SQLException e) {
-            System.out.println("User authentication failed due to an SQL error while interacting with the database.");
+            System.out.println(bundle.getString("db_sql_error"));
             return false;
         }
     }
 
     private static void invalidUserAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Invalid Username");
-        alert.setContentText("Username not found. Please enter a valid username.");
+        alert.setTitle(App.getBundle().getString("invalid_user_title"));
+        alert.setContentText(App.getBundle().getString("invalid_user_txt"));
         alert.showAndWait();
     }
 
     private static void invalidPasswordAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Invalid Password");
-        alert.setContentText("The entered password does not match the entered username. Please try again.");
+        alert.setTitle(App.getBundle().getString("invalid_pw_title"));
+        alert.setContentText(App.getBundle().getString("invalid_pw_txt"));
         alert.showAndWait();
     }
 }

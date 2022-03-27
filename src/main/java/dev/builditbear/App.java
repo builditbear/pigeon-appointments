@@ -17,14 +17,13 @@ import java.util.ResourceBundle;
  */
 public class App extends Application {
 
-    private static Scene scene;
-    private static Locale locale;
+    private static final Locale locale = Locale.getDefault();
+    private static final ResourceBundle bundle = ResourceBundle.getBundle(("dev/builditbear/pigeonApp"), locale);
 
     @Override
     public void start(Stage stage) throws IOException {
-        locale = Locale.getDefault();
         ConnectionManager.openConnection();
-        uiManager.loadScene("login",stage,locale);
+        uiManager.loadScene("login",stage, "480x480");
     }
 
     /**
@@ -33,6 +32,10 @@ public class App extends Application {
      */
     public static Locale getLocale() {
         return locale;
+    }
+
+    public static ResourceBundle getBundle() {
+        return bundle;
     }
 
     public static void main(String[] args) {

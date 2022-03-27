@@ -19,23 +19,22 @@ public abstract class uiManager {
      * @throws IOException Thrown in the event that the FXML resource specified is not available.
      */
     public static Parent loadFXML(String fxml, ResourceBundle bundle) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"), bundle);
         return fxmlLoader.load();
     }
 
     /**
      * Loads a new scene with the view resource passed in, sets it on the stage, and then shows it. This method
-     * will determine and load the appropriate resource bundle as well, under the assumption that it bears the same
-     * name as the associated view.
+     * will load the appropriate resource bundle as well. Renders the scene at the given resolution.
      * @param view The name of the view resource we intend to load. Must match the name of the associated ResourceBundle,
      *             minus the language and country code.
      * @param stage The stage a new scene is to be rendered upon.
-     * @param locale The object representing the user's locale.
+     * @param resolution The desired dimensions of the rendered scene in pixels, in the format IntegerxInteger.
      * @throws IOException Thrown in the event that the specified resource is not available for the FXML Loader.
      */
-    public static void loadScene(String view, Stage stage, Locale locale) throws IOException {
-        ResourceBundle bundle = ResourceBundle.getBundle(("dev/builditbear/" + view), locale);
-        Scene scene = new Scene(loadFXML(view, bundle), 480, 480);
+    public static void loadScene(String view, Stage stage, String resolution) throws IOException {
+        String[] dimensions = resolution.split("x");
+        Scene scene = new Scene(loadFXML(view, App.getBundle()), Integer.parseInt(dimensions[0]), Integer.parseInt(dimensions[1]));
         // Remove focus from the UserID textfield, which is focused by default, allowing the prompt text to be seen.
         scene.getRoot().requestFocus();
         stage.setScene(scene);
