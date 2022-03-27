@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 /**
- * Handles the low level details of CRUD operations to and from the database, as well as user authentication protocols.
+ * Handles the low level details of CRUD operations to and from the database.
  */
 public abstract class DbManager {
 
