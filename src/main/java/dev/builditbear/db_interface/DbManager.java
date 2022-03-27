@@ -13,6 +13,47 @@ import java.time.ZoneId;
 public abstract class DbManager {
     private static String user = "test";
 
+    /**
+     * Removes the customer associated with the provided customerId from the database.
+     * @param customerId The ID of the customer we wish to remove from the database.
+     * @return If the deletion is successful, the integer 1 is returned, since executeUpdate() returns the number of
+     * rows affected by the operation. Similarly, if an exception is thrown or no customer with the given ID exists in
+     * the database, 0 will be returned.
+     */
+    public static int removeCustomer(int customerId) {
+        Connection connection = ConnectionManager.getConnection();
+
+        PreparedStatement deleteUpdate;
+        try {
+            deleteUpdate = connection.prepareStatement("DELETE FROM customers WHERE Customer_ID = ?");
+            deleteUpdate.setString(1, Integer.toString(customerId));
+            return deleteUpdate.executeUpdate();
+        } catch(SQLException ex) {
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Removes any appointments associated with the given customerId. This is necessary prior to any customer record
+     * deletion due to foreign key contraints within the database.
+     * @param customerId The ID of the customer whose appointments are to be deleted from the database.
+     * @return The number of appointments deleted by this operation.
+     */
+    public static int removeAssociatedAppointments(int customerId) {
+        Connection connection = ConnectionManager.getConnection();
+
+        PreparedStatement deleteUpdate;
+        try {
+            deleteUpdate = connection.prepareStatement("DELETE FROM appointments WHERE Customer_ID = ?");
+            deleteUpdate.setString(1, Integer.toString(customerId));
+            return deleteUpdate.executeUpdate();
+        } catch(SQLException ex) {
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
+
     /** Adds a new customer to the database. Note that because it is possible (though unlikely) for two people to exist
      * at the same address with the exact same name, this function will add a customer whether or not an apparently
      * identical person is already in the database.
