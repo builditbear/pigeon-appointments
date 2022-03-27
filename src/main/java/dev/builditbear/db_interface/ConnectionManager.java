@@ -11,6 +11,11 @@ public abstract class ConnectionManager {
     private static final String dbUsername = "sqlUser";
     private static final String dbPassword = "Passw0rd!";
     private static Connection connection = null;
+    private static String currentUser;
+
+    public static String getCurrentUser() {
+        return currentUser;
+    }
 
     /**
      * Establishes and saves a connection to the database described in dbURL.
@@ -68,6 +73,8 @@ public abstract class ConnectionManager {
                 invalidPasswordAlert();
                 return false;
             } else {
+                // Successful login.
+                currentUser = username;
                 return true;
             }
         } catch(SQLException e) {

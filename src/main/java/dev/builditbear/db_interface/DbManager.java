@@ -11,7 +11,6 @@ import java.time.ZoneId;
  * Handles the low level details of CRUD operations to and from the database, as well as user authentication protocols.
  */
 public abstract class DbManager {
-    private static String user = "test";
 
     /**
      * Removes the customer associated with the provided customerId from the database.
@@ -55,6 +54,17 @@ public abstract class DbManager {
         }
     }
 
+    /**
+     * Update the customer record associated with the given ID, using the fields passed in as new values.
+     * @param customerId The ID of the customer to be updated.
+     * @param name The customer's new name.
+     * @param address The customer's new address.
+     * @param postalCode The customer's new postal code.
+     * @param phone The customer's new phone number.
+     * @param fldId The customer's new First Level Division.
+     * @return The number of rows successfully updated by this operation. Should be 1 if successful, and 0 if an
+     * exception was thrown or no customer matching the given ID exists in the database.
+     */
     public static int updateCustomer(int customerId, String name, String address, String postalCode, String phone, int fldId) {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement updateRecord;
@@ -62,7 +72,7 @@ public abstract class DbManager {
             updateRecord = connection.prepareStatement(
                     "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?" +
                             ", Last_Update = NOW(), Last_Updated_By = ? WHERE Customer_ID = ?");
-            Object[] parameters = {name, address, postalCode, phone, fldId, user};
+            Object[] parameters = {name, address, postalCode, phone, fldId, ConnectionManager.getCurrentUser()};
             for(int i = 1; i <= parameters.length; i++) {
                 updateRecord.setObject(i, parameters[i - 1]);
             }
@@ -92,6 +102,7 @@ public abstract class DbManager {
         try {
             addUpdate = connection.prepareStatement("INSERT INTO customers VALUES (NULL, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?");
             // Set query parameters before executing.
+            String user = ConnectionManager.getCurrentUser();
             Object[] parameters = {name, address, postalCode, phone, user, user, fldId};
             for(int i = 1; i <= parameters.length; i++) {
                 addUpdate.setObject(i, parameters[i - 1]);
