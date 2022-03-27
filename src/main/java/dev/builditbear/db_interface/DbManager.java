@@ -24,6 +24,7 @@ public abstract class DbManager {
         Connection connection = ConnectionManager.getConnection();
 
         PreparedStatement deleteUpdate;
+        removeAssociatedAppointments(customerId);
         try {
             deleteUpdate = connection.prepareStatement("DELETE FROM customers WHERE Customer_ID = ?");
             deleteUpdate.setString(1, Integer.toString(customerId));
@@ -54,6 +55,24 @@ public abstract class DbManager {
         }
     }
 
+    public static int updateCustomer(int customerId, String name, String address, String postalCode, String phone, int fldId) {
+        Connection connection = ConnectionManager.getConnection();
+        PreparedStatement updateRecord;
+        try {
+            updateRecord = connection.prepareStatement(
+                    "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?" +
+                            ", Last_Update = NOW(), Last_Updated_By = ? WHERE Customer_ID = ?");
+            Object[] parameters = {name, address, postalCode, phone, fldId, user};
+            for(int i = 1; i <= parameters.length; i++) {
+                updateRecord.setObject(i, parameters[i - 1]);
+            }
+            updateRecord.setString(7, Integer.toString(customerId));
+            return updateRecord.executeUpdate();
+        } catch(SQLException ex) {
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
     /** Adds a new customer to the database. Note that because it is possible (though unlikely) for two people to exist
      * at the same address with the exact same name, this function will add a customer whether or not an apparently
      * identical person is already in the database.
@@ -75,7 +94,7 @@ public abstract class DbManager {
             // Set query parameters before executing.
             Object[] parameters = {name, address, postalCode, phone, user, user, fldId};
             for(int i = 1; i <= parameters.length; i++) {
-                addUpdate.setObject(i, parameters[i]);
+                addUpdate.setObject(i, parameters[i - 1]);
             }
             return addUpdate.executeUpdate();
         } catch(SQLException ex) {
