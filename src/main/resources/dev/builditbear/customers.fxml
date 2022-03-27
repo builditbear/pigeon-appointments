@@ -31,7 +31,7 @@
             <Insets left="15.0" right="15.0" top="15.0" />
          </VBox.margin>
       </HBox>
-      <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <TableView fx:id="customerTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn prefWidth="75.0" text="Customer ID" />
           <TableColumn prefWidth="75.0" text="Name" />
@@ -60,6 +60,7 @@
             </HBox>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <buttons>
+                  <Button mnemonicParsing="false" text="Add" />
                 <Button mnemonicParsing="false" text="Update" />
                   <Button mnemonicParsing="false" text="Delete" />
               </buttons>

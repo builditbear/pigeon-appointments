@@ -40,7 +40,4 @@ public abstract class uiManager {
         stage.setScene(scene);
         stage.show();
     }
-
-
-
 }

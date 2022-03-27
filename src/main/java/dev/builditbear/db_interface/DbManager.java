@@ -128,23 +128,52 @@ public abstract class DbManager {
             selectQuery.setString(1, Integer.toString(customerId));
             ResultSet queryResult = selectQuery.executeQuery();
             if(queryResult.next()) {
-                String name = queryResult.getString(2);
-                String address = queryResult.getString(3);
-                String postalCode = queryResult.getString(4);
-                String phone = queryResult.getString(5);
-                LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(6).toInstant(),
-                                           ZoneId.systemDefault());
-                String createdBy = queryResult.getString(7);
-                Timestamp lastUpdate = queryResult.getTimestamp(8);
-                String lastUpdatedBy = queryResult.getString(9);
-                int divisionId = queryResult.getInt(10);
-                return new Customer(customerId, name, address, postalCode, phone, createDate, createdBy,
-                                    lastUpdate, lastUpdatedBy, divisionId);
+                return createCustomer(queryResult);
             } else {
                 return null;
             }
         } catch(SQLException ex) {
             // Should replace this with an alert.
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    private static Customer createCustomer(ResultSet queryResult) throws SQLException {
+        int customerId = queryResult.getInt(1);
+        String name = queryResult.getString(2);
+        String address = queryResult.getString(3);
+        String postalCode = queryResult.getString(4);
+        String phone = queryResult.getString(5);
+        LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(6).toInstant(),
+                ZoneId.systemDefault());
+        String createdBy = queryResult.getString(7);
+        Timestamp lastUpdate = queryResult.getTimestamp(8);
+        String lastUpdatedBy = queryResult.getString(9);
+        int divisionId = queryResult.getInt(10);
+        return new Customer(customerId, name, address, postalCode, phone, createDate, createdBy,
+                lastUpdate, lastUpdatedBy, divisionId);
+    }
+
+    public static Customer[] getAllCustomers() {
+        Connection connection = ConnectionManager.getConnection();
+        PreparedStatement selectQuery;
+        try {
+            selectQuery = connection.prepareStatement("SELECT * FROM customers");
+            ResultSet queryResult = selectQuery.executeQuery();
+            // Figure out how many rows the resultSet has and create an appropriately sized array to contain results.
+            queryResult.last();
+            int numberOfRows = queryResult.getRow();
+            Customer customers[] = new Customer [numberOfRows];
+            // Move resultSet pointer back to before the first entry so we can iterate through rows and transform
+            // column data into Customer objects.
+            queryResult.beforeFirst();
+            for(int i = 0; i < numberOfRows; i++) {
+                queryResult.next();
+                customers[i] = createCustomer(queryResult);
+            }
+            return customers;
+        } catch(SQLException ex) {
             System.out.println(ex.getMessage());
             return null;
         }

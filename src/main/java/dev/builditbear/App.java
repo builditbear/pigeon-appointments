@@ -23,7 +23,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         ConnectionManager.openConnection();
-        uiManager.loadScene("login",stage, "480x480");
+        uiManager.loadScene("login", stage, "480x480");
     }
 
     /**
