@@ -139,6 +139,12 @@ public abstract class DbManager {
         }
     }
 
+    /**
+     * Returns a new Customer whose data reflects the record pointed to by the given ResultSet object.
+     * @param queryResult A ResultSet pointing to a record we wish to create a new Customer object based on.
+     * @return A new Customer object representing the record being pointed to by the ResultSet.
+     * @throws SQLException In the event of an error encountered while communicating with the database.
+     */
     private static Customer createCustomer(ResultSet queryResult) throws SQLException {
         int customerId = queryResult.getInt(1);
         String name = queryResult.getString(2);
@@ -155,6 +161,11 @@ public abstract class DbManager {
                 lastUpdate, lastUpdatedBy, divisionId);
     }
 
+    /**
+     * Retrieves an array representing all customer records currently in the database.
+     * @return An array containing all customer records currently in the database. Will be empty if there are no rows,
+     * and null in the event of an SQLException occurring.
+     */
     public static Customer[] getAllCustomers() {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement selectQuery;
