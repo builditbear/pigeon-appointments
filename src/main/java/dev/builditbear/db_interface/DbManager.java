@@ -6,6 +6,8 @@ import dev.builditbear.model.FirstLevelDivision;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles the low level details of CRUD operations to and from the database.
@@ -29,6 +31,7 @@ public abstract class DbManager {
             deleteUpdate.setString(1, Integer.toString(customerId));
             return deleteUpdate.executeUpdate();
         } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method removeCustomer:");
             System.out.println(ex.getMessage());
             return 0;
         }
@@ -49,6 +52,7 @@ public abstract class DbManager {
             deleteUpdate.setString(1, Integer.toString(customerId));
             return deleteUpdate.executeUpdate();
         } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method removeAssociatedAppointments:");
             System.out.println(ex.getMessage());
             return 0;
         }
@@ -79,6 +83,7 @@ public abstract class DbManager {
             updateRecord.setString(7, Integer.toString(customerId));
             return updateRecord.executeUpdate();
         } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method updateCustomer:");
             System.out.println(ex.getMessage());
             return 0;
         }
@@ -109,6 +114,7 @@ public abstract class DbManager {
             }
             return addUpdate.executeUpdate();
         } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method addCustomer:");
             System.out.println(ex.getMessage());
             return 0;
         }
@@ -133,7 +139,7 @@ public abstract class DbManager {
                 return null;
             }
         } catch(SQLException ex) {
-            // Should replace this with an alert.
+            System.out.println("An SQLException occurred in method getCustomer:");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -145,20 +151,26 @@ public abstract class DbManager {
      * @return A new Customer object representing the record being pointed to by the ResultSet.
      * @throws SQLException In the event of an error encountered while communicating with the database.
      */
-    private static Customer createCustomer(ResultSet queryResult) throws SQLException {
-        int customerId = queryResult.getInt(1);
-        String name = queryResult.getString(2);
-        String address = queryResult.getString(3);
-        String postalCode = queryResult.getString(4);
-        String phone = queryResult.getString(5);
-        LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(6).toInstant(),
-                ZoneId.systemDefault());
-        String createdBy = queryResult.getString(7);
-        Timestamp lastUpdate = queryResult.getTimestamp(8);
-        String lastUpdatedBy = queryResult.getString(9);
-        int divisionId = queryResult.getInt(10);
-        return new Customer(customerId, name, address, postalCode, phone, createDate, createdBy,
-                lastUpdate, lastUpdatedBy, divisionId);
+    private static Customer createCustomer(ResultSet queryResult) {
+        try {
+            int customerId = queryResult.getInt(1);
+            String name = queryResult.getString(2);
+            String address = queryResult.getString(3);
+            String postalCode = queryResult.getString(4);
+            String phone = queryResult.getString(5);
+            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getTimestamp(6).toInstant(),
+                    ZoneId.systemDefault());
+            String createdBy = queryResult.getString(7);
+            Timestamp lastUpdate = queryResult.getTimestamp(8);
+            String lastUpdatedBy = queryResult.getString(9);
+            int divisionId = queryResult.getInt(10);
+            return new Customer(customerId, name, address, postalCode, phone, createDate, createdBy,
+                    lastUpdate, lastUpdatedBy, divisionId);
+        } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method createCustomer:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -166,25 +178,22 @@ public abstract class DbManager {
      * @return An array containing all customer records currently in the database. Will be empty if there are no rows,
      * and null in the event of an SQLException occurring.
      */
-    public static Customer[] getAllCustomers() {
+    public static ArrayList<Customer> getAllCustomers() {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement selectQuery;
         try {
             selectQuery = connection.prepareStatement("SELECT * FROM customers");
             ResultSet queryResult = selectQuery.executeQuery();
-            // Figure out how many rows the resultSet has and create an appropriately sized array to contain results.
-            queryResult.last();
-            int numberOfRows = queryResult.getRow();
-            Customer customers[] = new Customer [numberOfRows];
-            // Move resultSet pointer back to before the first entry so we can iterate through rows and transform
-            // column data into Customer objects.
-            queryResult.beforeFirst();
-            for(int i = 0; i < numberOfRows; i++) {
-                queryResult.next();
-                customers[i] = createCustomer(queryResult);
+            ArrayList<Customer> customers = new ArrayList<>();
+            boolean moreRows = queryResult.next();
+            while(moreRows) {
+                Customer c = createCustomer(queryResult);
+                customers.add(c);
+                moreRows = queryResult.next();
             }
             return customers;
         } catch(SQLException ex) {
+            System.out.println("The following exception was encountered in method getAllCustomers:");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -218,7 +227,7 @@ public abstract class DbManager {
                 return null;
             }
         } catch(SQLException ex) {
-            // Should replace this with an alert.
+            System.out.println("An SQLException occurred in method getFirstLevelDivision:");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -249,7 +258,7 @@ public abstract class DbManager {
                 return null;
             }
         } catch(SQLException ex) {
-            // Should replace this with an alert.
+            System.out.println("An SQLException occurred in method getCountry:");
             System.out.println(ex.getMessage());
             return null;
         }

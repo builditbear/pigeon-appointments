@@ -109,7 +109,8 @@ public class LoginController implements Initializable{
             try{
                 uiManager.loadScene("customers",(Stage) loginButton.getScene().getWindow(),"1200x800");
             } catch(IOException ex) {
-                System.out.println("An IO exception occurred! Make sure that the view you're attempting to load exists.");
+                System.out.println("An IO exception occurred in method onLoginClicked. " +
+                                   "Make sure that the view you're attempting to load exists.");
             }
         }
     }

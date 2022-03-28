@@ -33,16 +33,16 @@
       </HBox>
       <TableView fx:id="customerTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn prefWidth="75.0" text="Customer ID" />
-          <TableColumn prefWidth="75.0" text="Name" />
-            <TableColumn prefWidth="75.0" text="Address" />
-            <TableColumn prefWidth="75.0" text="Postal Code" />
-            <TableColumn prefWidth="75.0" text="Phone" />
-            <TableColumn prefWidth="75.0" text="Create Date" />
-            <TableColumn prefWidth="75.0" text="Created By" />
-            <TableColumn prefWidth="75.0" text="Last Update" />
-            <TableColumn prefWidth="75.0" text="Last Updated By" />
-            <TableColumn prefWidth="75.0" text="First Level Division" />
+          <TableColumn fx:id="customerId" prefWidth="75.0" text="Customer ID" />
+          <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
+            <TableColumn fx:id="address" prefWidth="75.0" text="Address" />
+            <TableColumn fx:id="postalCode" prefWidth="75.0" text="Postal Code" />
+            <TableColumn fx:id="phone" prefWidth="75.0" text="Phone" />
+            <TableColumn fx:id="createDate" prefWidth="75.0" text="Create Date" />
+            <TableColumn fx:id="createdBy" prefWidth="75.0" text="Created By" />
+            <TableColumn fx:id="lastUpdate" prefWidth="75.0" text="Last Update" />
+            <TableColumn fx:id="lastUpdatedBy" prefWidth="75.0" text="Last Updated By" />
+            <TableColumn fx:id="firstLevelDivision" prefWidth="75.0" text="First Level Division" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -62,7 +62,7 @@
               <buttons>
                   <Button mnemonicParsing="false" text="Add" />
                 <Button mnemonicParsing="false" text="Update" />
-                  <Button mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#onDeleteClicked" text="Delete" />
               </buttons>
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

@@ -6,6 +6,7 @@ module dev.builditbear {
 
     opens dev.builditbear;
     opens dev.builditbear.controller to javafx.fxml;
+    opens dev.builditbear.model to javafx.base;
     exports dev.builditbear;
     exports dev.builditbear.controller;
 }
