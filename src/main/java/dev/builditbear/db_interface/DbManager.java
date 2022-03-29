@@ -23,7 +23,12 @@ public abstract class DbManager {
     public static boolean isAssociatedWithCountry(String firstLevelDivisionName, String countryName) {
         FirstLevelDivision fld = getFirstLevelDivision(firstLevelDivisionName);
         Country fldCountry = getCountry(fld.getCountryId());
-        return fldCountry.getCountry().equals(countryName);
+        if(fldCountry != null) {
+            return fldCountry.getCountry().equals(countryName);
+        } else {
+            // This line is reached if no country matching the fld's countryId was found.
+            return false;
+        }
     }
 
     /**
@@ -220,7 +225,7 @@ public abstract class DbManager {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement selectQuery;
         try {
-            selectQuery = connection.prepareStatement("SELECT * FROM first_level_division WHERE Division_ID = ?");
+            selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division_ID = ?");
             selectQuery.setString(1, Integer.toString(fldId));
             ResultSet queryResult = selectQuery.executeQuery();
             return createFirstLevelDivision(queryResult);
@@ -241,7 +246,7 @@ public abstract class DbManager {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement selectQuery;
         try {
-            selectQuery = connection.prepareStatement("SELECT * FROM first_level_division WHERE Division = ?");
+            selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division = ?");
             selectQuery.setString(1, name);
             ResultSet queryResult = selectQuery.executeQuery();
             return createFirstLevelDivision(queryResult);
@@ -262,7 +267,7 @@ public abstract class DbManager {
         if(queryResult.next()) {
             int divisionId = queryResult.getInt(1);
             String divisionName = queryResult.getString(2);
-            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
+            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getTimestamp(3).toInstant(),
                     ZoneId.systemDefault());
             String createdBy = queryResult.getString(4);
             Timestamp lastUpdate = queryResult.getTimestamp(5);
@@ -328,7 +333,7 @@ public abstract class DbManager {
         if(queryResult.next()) {
             int countryId = queryResult.getInt(1);
             String countryName = queryResult.getString(2);
-            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
+            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getTimestamp(3).toInstant(),
                     ZoneId.systemDefault());
             String createdBy = queryResult.getString(4);
             Timestamp lastUpdate = queryResult.getTimestamp(5);

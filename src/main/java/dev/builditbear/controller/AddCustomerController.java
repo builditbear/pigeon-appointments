@@ -1,5 +1,6 @@
 package dev.builditbear.controller;
 
+import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Country;
 import dev.builditbear.model.FirstLevelDivision;
 import dev.builditbear.utility.uiManager;
@@ -24,7 +25,7 @@ public class AddCustomerController implements Initializable {
     private ComboBox<String> fldComboBox;
     @FXML
     private Button cancelButton;
-    private FilteredList<String> displayedFirstLevelDivisions =
+    private final FilteredList<String> displayedFirstLevelDivisions =
             new FilteredList<>(FXCollections.observableArrayList(FirstLevelDivision.getFldNames()));
 
     @Override
@@ -36,7 +37,7 @@ public class AddCustomerController implements Initializable {
     @FXML
     private void onCountryChange(ActionEvent e) {
         String newCountry = countryComboBox.getValue();
-        displayedFirstLevelDivisions.setPredicate(fld -> fld.equals(newCountry));
+        displayedFirstLevelDivisions.setPredicate(fld -> DbManager.isAssociatedWithCountry(fld, newCountry));
     }
 
     @FXML
