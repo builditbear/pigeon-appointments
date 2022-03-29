@@ -245,21 +245,53 @@ public abstract class DbManager {
             selectQuery = connection.prepareStatement("SELECT * FROM countries WHERE Country_ID = ?");
             selectQuery.setString(1, Integer.toString(countryId));
             ResultSet queryResult = selectQuery.executeQuery();
-            if(queryResult.next()) {
-                String countryName = queryResult.getString(2);
-                LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
-                                           ZoneId.systemDefault());
-                String createdBy = queryResult.getString(4);
-                Timestamp lastUpdate = queryResult.getTimestamp(5);
-                String lastUpdateBy = queryResult.getString(6);
-                return new Country(countryId, countryName, createDate, createdBy, lastUpdate, lastUpdateBy);
-            } else {
-                // No country exists with this name.
-                return null;
-            }
+            return createCountry(queryResult);
         } catch(SQLException ex) {
-            System.out.println("An SQLException occurred in method getCountry:");
+            System.out.println("An SQLException occurred in method getCountry(countryId):");
             System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Alternate method for country lookup which takes the country's name (under the assumption that all country names
+     * are unique) instead of an id.
+     * @param name The unique name of the country we wish to retrieve from the database.
+     * @return A Country object representing the country data retrieved from the database. Null if the country does not
+     * exist in the database.
+     */
+    public static Country getCountry(String name) {
+        Connection connection = ConnectionManager.getConnection();
+        PreparedStatement selectQuery;
+        try {
+            selectQuery = connection.prepareStatement("SELECT * FROM countries WHERE Division = ?");
+            selectQuery.setString(1, name);
+            ResultSet queryResult = selectQuery.executeQuery();
+            return createCountry(queryResult);
+        } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method getCountry(name):");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Generates a Country object reflecting the information contained in the ResultSet passed in.
+     * @param queryResult A ResultSet containing the results of an SQL query for a country record.
+     * @return A new Country object representing the data in the ResultSet.
+     * @throws SQLException Thrown in the event of any communication error with the database during interaction.
+     */
+    private static Country createCountry(ResultSet queryResult) throws SQLException{
+        if(queryResult.next()) {
+            int countryId = queryResult.getInt(1);
+            String countryName = queryResult.getString(2);
+            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
+                    ZoneId.systemDefault());
+            String createdBy = queryResult.getString(4);
+            Timestamp lastUpdate = queryResult.getTimestamp(5);
+            String lastUpdateBy = queryResult.getString(6);
+            return new Country(countryId, countryName, createDate, createdBy, lastUpdate, lastUpdateBy);
+        } else {
             return null;
         }
     }

@@ -77,11 +77,12 @@
          <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button alignment="TOP_LEFT" mnemonicParsing="false" text="View Customers" />
+                  <Button fx:id="viewCustomers" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#onViewCustomersClicked" text="View Customers" />
                </children>
             </HBox>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <buttons>
+                  <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddClicked" text="Add" />
                 <Button mnemonicParsing="false" text="Update" />
                   <Button mnemonicParsing="false" text="Delete" />
               </buttons>

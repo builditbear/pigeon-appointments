@@ -55,12 +55,12 @@
          <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button alignment="TOP_LEFT" mnemonicParsing="false" text="View Appointments" />
+                  <Button fx:id="viewAppointments" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#onViewAppointmentsClicked" text="View Appointments" />
                </children>
             </HBox>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <buttons>
-                  <Button mnemonicParsing="false" text="Add" />
+                  <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddClicked" text="Add" />
                 <Button mnemonicParsing="false" text="Update" />
                   <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#onDeleteClicked" text="Delete" />
               </buttons>

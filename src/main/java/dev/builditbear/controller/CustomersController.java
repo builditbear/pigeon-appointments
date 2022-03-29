@@ -2,6 +2,7 @@ package dev.builditbear.controller;
 
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Customer;
+import dev.builditbear.utility.uiManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,7 +12,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -44,7 +47,11 @@ public class CustomersController implements Initializable {
     @FXML
     private TableColumn<Customer, Integer> firstLevelDivision;
     @FXML
-    private Button onDeleteClicked;
+    private Button deleteButton;
+    @FXML
+    private Button viewAppointments;
+    @FXML
+    private Button addButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,6 +66,16 @@ public class CustomersController implements Initializable {
         Customer customer = customerTable.getSelectionModel().getSelectedItem();
         DbManager.removeCustomer(customer.getId());
         customerTable.setItems(FXCollections.observableArrayList(DbManager.getAllCustomers()));
+    }
+
+    @FXML
+    private void onAddClicked(MouseEvent e) {
+        try{
+            uiManager.loadScene("addCustomer",(Stage) addButton.getScene().getWindow(),"480x480");
+        } catch(IOException ex) {
+            System.out.println("An IO exception occurred in event handler onAddClicked. " +
+                    "Make sure that the view you're attempting to load exists.");
+        }
     }
 
     private void populateCustomerTable(ObservableList<Customer> customers, TableView<Customer> customerTable,
@@ -78,5 +95,15 @@ public class CustomersController implements Initializable {
         lastUpdate.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
         lastUpdatedBy.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
         divisionId.setCellValueFactory(new PropertyValueFactory<>("divisionId"));
+    }
+
+    @FXML
+    private void onViewAppointmentsClicked(MouseEvent e) {
+        try{
+            uiManager.loadScene("appointments",(Stage) viewAppointments.getScene().getWindow(),"1200x800");
+        } catch(IOException ex) {
+            System.out.println("An IO exception occurred in event handler onViewAppointmentsClicked. " +
+                    "Make sure that the view you're attempting to load exists.");
+        }
     }
 }
