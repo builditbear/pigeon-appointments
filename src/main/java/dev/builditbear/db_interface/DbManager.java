@@ -15,6 +15,18 @@ import java.util.List;
 public abstract class DbManager {
 
     /**
+     * Determines whether or not the named FirstLevelDivision is in the named Country.
+     * @param firstLevelDivisionName The name of the FirstLevelDivision in question.
+     * @param countryName The name of the Country in question.
+     * @return True if the FirstLevelDivision is in the given Country and False otherwise.
+     */
+    public static boolean isAssociatedWithCountry(String firstLevelDivisionName, String countryName) {
+        FirstLevelDivision fld = getFirstLevelDivision(firstLevelDivisionName);
+        Country fldCountry = getCountry(fld.getCountryId());
+        return fldCountry.getCountry().equals(countryName);
+    }
+
+    /**
      * Removes the customer associated with the provided customerId from the database.
      * @param customerId The ID of the customer we wish to remove from the database.
      * @return If the deletion is successful, the integer 1 is returned, since executeUpdate() returns the number of
@@ -211,24 +223,55 @@ public abstract class DbManager {
             selectQuery = connection.prepareStatement("SELECT * FROM first_level_division WHERE Division_ID = ?");
             selectQuery.setString(1, Integer.toString(fldId));
             ResultSet queryResult = selectQuery.executeQuery();
-            if(queryResult.next()) {
-                String divisionName = queryResult.getString(2);
-                LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
-                                           ZoneId.systemDefault());
-                String createdBy = queryResult.getString(4);
-                Timestamp lastUpdate = queryResult.getTimestamp(5);
-                String lastUpdatedBy = queryResult.getString(6);
-                int countryId = queryResult.getInt(7);
-
-                return new FirstLevelDivision(fldId, divisionName, createDate, createdBy,
-                                              lastUpdate, lastUpdatedBy, countryId);
-            } else {
-                // No division exists with the given name.
-                return null;
-            }
+            return createFirstLevelDivision(queryResult);
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method getFirstLevelDivision:");
             System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Alternate lookup method for FirstLevelDivision records which takes the name associated with the
+     * FirstLevelDivision instead.
+     * @param name The name associated with the FirstLevelDivision in question.
+     * @return A FirstLevelDivision object reflecting the data associated with the given name in the database.
+     */
+    public static FirstLevelDivision getFirstLevelDivision(String name) {
+        Connection connection = ConnectionManager.getConnection();
+        PreparedStatement selectQuery;
+        try {
+            selectQuery = connection.prepareStatement("SELECT * FROM first_level_division WHERE Division = ?");
+            selectQuery.setString(1, name);
+            ResultSet queryResult = selectQuery.executeQuery();
+            return createFirstLevelDivision(queryResult);
+        } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method getFirstLevelDivision(name):");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Generates a new FirstLevelDivision reflecting the data in the ResultSet passed in.
+     * @param queryResult  A ResultSet representing an SQL response containing a single FirstLevelDivision record.
+     * @return A new FirstLevelDivision object based on the ResultSet passed in.
+     * @throws SQLException Thrown in the event of a communication error with the SQL database.
+     */
+    private static FirstLevelDivision createFirstLevelDivision(ResultSet queryResult) throws SQLException{
+        if(queryResult.next()) {
+            int divisionId = queryResult.getInt(1);
+            String divisionName = queryResult.getString(2);
+            LocalDateTime createDate = LocalDateTime.ofInstant(queryResult.getDate(3).toInstant(),
+                    ZoneId.systemDefault());
+            String createdBy = queryResult.getString(4);
+            Timestamp lastUpdate = queryResult.getTimestamp(5);
+            String lastUpdatedBy = queryResult.getString(6);
+            int countryId = queryResult.getInt(7);
+
+            return new FirstLevelDivision(divisionId, divisionName, createDate, createdBy,
+                    lastUpdate, lastUpdatedBy, countryId);
+        } else {
             return null;
         }
     }
