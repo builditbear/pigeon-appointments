@@ -10,7 +10,11 @@ import java.util.TimeZone;
  * Provides common utility methods for easily converting between timezones, printing LocalDateTime objects in
  * various formats, and other time related tasks.
  */
-public abstract class TimeConversion {
+public final class TimeConversion {
+    private TimeConversion() {
+        throw new RuntimeException("Instantiation of TimeConversion is not allowed.");
+    }
+
     private static final DateTimeFormatter standard = DateTimeFormatter.ofPattern("hh:mm:ss a");
     private static final DateTimeFormatter showTimezone= DateTimeFormatter.ofPattern("hh:mm:ss a z");
 

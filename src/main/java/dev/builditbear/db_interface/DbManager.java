@@ -12,7 +12,10 @@ import java.util.List;
 /**
  * Handles the low level details of CRUD operations to and from the database.
  */
-public abstract class DbManager {
+public final class DbManager {
+    private DbManager() {
+        throw new RuntimeException("Instantiation of DbManager is not allowed.");
+    }
 
     /**
      * Determines whether or not the named FirstLevelDivision is in the named Country.
@@ -28,6 +31,21 @@ public abstract class DbManager {
         } else {
             // This line is reached if no country matching the fld's countryId was found.
             return false;
+        }
+    }
+
+    /**
+     * Retrieve the ID of the First Level Division corresponding to the name passed in.
+     * @param firstLevelDivisionName The name of the First Level Division we want the ID for.
+     * @return The ID of the First Level Division corresponding to the name passed in, or -1 if no division matching
+     * that name exists in the database.
+     */
+    public static int getFldId(String firstLevelDivisionName) {
+        FirstLevelDivision fld = getFirstLevelDivision(firstLevelDivisionName);
+        if(fld != null) {
+            return fld.getId();
+        } else {
+            return -1;
         }
     }
 
@@ -122,7 +140,7 @@ public abstract class DbManager {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement addUpdate;
         try {
-            addUpdate = connection.prepareStatement("INSERT INTO customers VALUES (NULL, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?");
+            addUpdate = connection.prepareStatement("INSERT INTO customers VALUES (NULL, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?)");
             // Set query parameters before executing.
             String user = ConnectionManager.getCurrentUser();
             Object[] parameters = {name, address, postalCode, phone, user, user, fldId};

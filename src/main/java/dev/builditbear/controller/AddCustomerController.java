@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -20,11 +21,22 @@ import java.util.ResourceBundle;
 
 public class AddCustomerController implements Initializable {
     @FXML
+    private TextField nameField;
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField postalCode;
+    @FXML
+    private TextField phoneNumber;
+    @FXML
     private ComboBox<String> countryComboBox;
     @FXML
     private ComboBox<String> fldComboBox;
     @FXML
     private Button cancelButton;
+    @FXML
+    private Button addButton;
+
     private final FilteredList<String> displayedFirstLevelDivisions =
             new FilteredList<>(FXCollections.observableArrayList(FirstLevelDivision.getFldNames()));
 
@@ -42,7 +54,15 @@ public class AddCustomerController implements Initializable {
 
     @FXML
     private void onAddButtonClicked(MouseEvent e) {
-        System.out.println("Goddamn, son!");
+        DbManager.addCustomer(nameField.getText(), addressField.getText(), postalCode.getText(),
+                              phoneNumber.getText(), DbManager.getFldId(fldComboBox.getValue()));
+        try {
+            uiManager.loadScene("customers", (Stage) addButton.getScene().getWindow(), "1200x800");
+        } catch(IOException ex) {
+            System.out.println("An IOException occurred in method onCancelButtonClicked. " +
+                    "Please make sure the view you are attempting to load exits.");
+        }
+
     }
 
     @FXML

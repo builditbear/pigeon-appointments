@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public abstract class uiManager {
+public final class uiManager {
+    private uiManager() {
+        throw new RuntimeException("Instantiation of uiManager is not allowed.");
+    }
     /**
      * Loads the specified FXML resource with the appropriate ResourceBundle and returns the result as a Parent node.
      * @param fxml The name of the FXML resource to be loaded.

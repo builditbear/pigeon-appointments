@@ -2,11 +2,16 @@ package dev.builditbear.db_interface;
 
 import dev.builditbear.App;
 import dev.builditbear.model.Customer;
+import dev.builditbear.utility.Alerts;
 import javafx.scene.control.Alert;
 import java.sql.*;
 import java.util.ResourceBundle;
 
-public abstract class ConnectionManager {
+public final class ConnectionManager {
+    private ConnectionManager() {
+        throw new RuntimeException("Instantiation of ConnectionManager is not allowed.");
+    }
+
     private static final String dbURL = "jdbc:mysql://localhost:3306/client_schedule";
     private static final String dbUsername = "sqlUser";
     private static final String dbPassword = "Passw0rd!";
@@ -67,10 +72,10 @@ public abstract class ConnectionManager {
             ResultSet userResult = validateUser.executeQuery();
             ResultSet passwordResult = validatePassword.executeQuery();
             if(!userResult.next()){
-                invalidUserAlert();
+                Alerts.invalidUserAlert();
                 return false;
             } else if(!passwordResult.next()) {
-                invalidPasswordAlert();
+                Alerts.invalidPasswordAlert();
                 return false;
             } else {
                 // Successful login.
@@ -81,19 +86,5 @@ public abstract class ConnectionManager {
             System.out.println(bundle.getString("db_sql_error"));
             return false;
         }
-    }
-
-    private static void invalidUserAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(App.getBundle().getString("invalid_user_title"));
-        alert.setContentText(App.getBundle().getString("invalid_user_txt"));
-        alert.showAndWait();
-    }
-
-    private static void invalidPasswordAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(App.getBundle().getString("invalid_pw_title"));
-        alert.setContentText(App.getBundle().getString("invalid_pw_txt"));
-        alert.showAndWait();
     }
 }

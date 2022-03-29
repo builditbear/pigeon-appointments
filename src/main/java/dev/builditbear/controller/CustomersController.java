@@ -1,12 +1,15 @@
 package dev.builditbear.controller;
 
+import dev.builditbear.App;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Customer;
+import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.uiManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -66,6 +69,7 @@ public class CustomersController implements Initializable {
         Customer customer = customerTable.getSelectionModel().getSelectedItem();
         DbManager.removeCustomer(customer.getId());
         customerTable.setItems(FXCollections.observableArrayList(DbManager.getAllCustomers()));
+        Alerts.customerDeletedAlert(customer);
     }
 
     @FXML

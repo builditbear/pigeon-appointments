@@ -5,9 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49164964-80c4-4c68-b53a-58b56cffed0f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/Alerts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddCustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddCustomerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/ConnectionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/uiManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/uiManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addCustomer.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addCustomer.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dev/builditbear/db_interface/ConnectionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/builditbear/db_interface/ConnectionManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dev/builditbear/utility/uiManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/builditbear/utility/uiManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,8 +98,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java</url>
-          <line>24</line>
-          <option name="timeStamp" value="17" />
+          <line>149</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

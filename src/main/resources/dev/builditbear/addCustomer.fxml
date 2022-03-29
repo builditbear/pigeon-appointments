@@ -20,25 +20,25 @@
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Name" />
-            <TextField />
+            <TextField fx:id="nameField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Address" />
-            <TextField HBox.hgrow="ALWAYS" />
+            <TextField fx:id="addressField" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Postal Code" />
-            <TextField />
+            <TextField fx:id="postalCode" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Phone Number" />
-            <TextField />
+            <TextField fx:id="phoneNumber" />
          </children>
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0">
@@ -57,7 +57,7 @@
       </HBox>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
-          <Button fx:id="addButton" mnemonicParsing="false" text="Add" />
+          <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddButtonClicked" text="Add" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" text="Cancel" />
         </buttons>
       </ButtonBar>
