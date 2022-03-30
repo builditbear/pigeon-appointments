@@ -100,7 +100,7 @@ public final class DbManager {
      * @param address The customer's new address.
      * @param postalCode The customer's new postal code.
      * @param phone The customer's new phone number.
-     * @param fldId The customer's new First Level Division.
+     * @param fldId The customer's new First Level Division ID.
      * @return The number of rows successfully updated by this operation. Should be 1 if successful, and 0 if an
      * exception was thrown or no customer matching the given ID exists in the database.
      */

@@ -9,4 +9,5 @@ module dev.builditbear {
     opens dev.builditbear.model to javafx.base;
     exports dev.builditbear;
     exports dev.builditbear.controller;
+    exports dev.builditbear.model;
 }

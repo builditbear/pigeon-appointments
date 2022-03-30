@@ -55,6 +55,10 @@ public class CustomersController implements Initializable {
     private Button viewAppointments;
     @FXML
     private Button addButton;
+    @FXML
+    private Button updateButton;
+
+    private static Customer selectedCustomer = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -64,12 +68,32 @@ public class CustomersController implements Initializable {
                 createdBy, lastUpdate, lastUpdatedBy, firstLevelDivision);
     }
 
+    public static void clearSelectedCustomer() {
+        selectedCustomer = null;
+    }
+
+    public static Customer getSelectedCustomer() {
+        return selectedCustomer;
+    }
+
     @FXML
     private void onDeleteClicked(MouseEvent e) {
         Customer customer = customerTable.getSelectionModel().getSelectedItem();
         DbManager.removeCustomer(customer.getId());
         customerTable.setItems(FXCollections.observableArrayList(DbManager.getAllCustomers()));
         Alerts.customerDeletedAlert(customer);
+    }
+
+    @FXML
+    private void onUpdateClicked(MouseEvent e) {
+        selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        try {
+            uiManager.loadScene("updateCustomer", (Stage) updateButton.getScene().getWindow(), "480x480");
+        } catch(IOException ex) {
+            System.out.println("An IO exception occurred in event handler onUpdateClicked. " +
+                    "Make sure that the view you're attempting to load exits.");
+            System.out.println(ex.getMessage());
+        }
     }
 
     @FXML

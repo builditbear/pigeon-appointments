@@ -16,7 +16,6 @@ import java.util.ResourceBundle;
  * JavaFX App
  */
 public class App extends Application {
-
     private static final Locale locale = Locale.getDefault();
     private static final ResourceBundle bundle = ResourceBundle.getBundle(("dev/builditbear/pigeonApp"), locale);
 

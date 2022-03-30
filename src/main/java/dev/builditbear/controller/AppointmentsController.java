@@ -1,5 +1,6 @@
 package dev.builditbear.controller;
 
+import dev.builditbear.model.Customer;
 import dev.builditbear.utility.uiManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +16,7 @@ public class AppointmentsController implements Initializable {
 
     @FXML
     private Button viewCustomers;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
