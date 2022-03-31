@@ -132,6 +132,7 @@ public class CustomersController implements Initializable {
         } catch(IOException ex) {
             System.out.println("An IO exception occurred in event handler onViewAppointmentsClicked. " +
                     "Make sure that the view you're attempting to load exists.");
+            System.out.println(ex.getMessage());
         }
     }
 }

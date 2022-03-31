@@ -29,4 +29,9 @@ public class AppointmentsController implements Initializable {
             System.out.println("An IO exception occurred in event handler onViewAppointmentsClicked.");
         }
     }
+
+    @FXML
+    private void onAddClicked(MouseEvent mouseEvent) {
+        System.out.println("You monster - you CLICKED me!");
+    }
 }

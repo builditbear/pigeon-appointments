@@ -17,6 +17,8 @@ public final class DbManager {
         throw new RuntimeException("Instantiation of DbManager is not allowed.");
     }
 
+
+
     /**
      * Determines whether or not the named FirstLevelDivision is in the named Country.
      * @param firstLevelDivisionName The name of the FirstLevelDivision in question.
