@@ -17,7 +17,26 @@ public final class DbManager {
         throw new RuntimeException("Instantiation of DbManager is not allowed.");
     }
 
-
+    public static int addAppointment(String title, String description, String location, String type,
+                                     LocalDateTime start, LocalDateTime end, String customer, int userId, String contactId) {
+        Connection connection = ConnectionManager.getConnection();
+        try {
+            PreparedStatement addRecord = connection.prepareStatement("INSERT INTO appointments VALUES " +
+                    "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
+            User user = ConnectionManager.getCurrentUser();
+            Object[] parameters = {title, description, location, type, start, end, user.getName(), user.getName(),
+                                   Integer.toString(DbManager.getCustomer(customer).getId()),
+                                   Integer.toString(user.getId()),
+                                   Integer.toString(DbManager.getContact(contactId).getId())};
+            for(int i = 1; i <= parameters.length; i++) {
+                addRecord.setObject(i, parameters[i - 1]);
+            }
+            return addRecord.executeUpdate();
+        } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method addAppointment:");
+            System.out.println(ex.getMessage());
+        }
+    }
 
     /**
      * Determines whether or not the named FirstLevelDivision is in the named Country.

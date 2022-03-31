@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49164964-80c4-4c68-b53a-58b56cffed0f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Appointment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Contacts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Contacts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Contact.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +88,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java</url>
-          <line>151</line>
+          <line>170</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
