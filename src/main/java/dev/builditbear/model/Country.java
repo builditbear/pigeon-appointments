@@ -32,7 +32,7 @@ public class Country {
         return id;
     }
 
-    public String getCountry() {
+    public String getName() {
         return country;
     }
 

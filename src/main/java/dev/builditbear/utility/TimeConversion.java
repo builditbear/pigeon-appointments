@@ -1,5 +1,6 @@
 package dev.builditbear.utility;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -36,5 +37,13 @@ public final class TimeConversion {
     public static String printZonedLocalTime(LocalDateTime ldt) {
         ZonedDateTime zdt = ldt.atZone(TimeZone.getDefault().toZoneId());
         return zdt.format(showTimezone);
+    }
+
+    public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
+        return timestamp.toLocalDateTime();
+    }
+
+    public static Timestamp localDateTimeToTimestamp(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
     }
 }

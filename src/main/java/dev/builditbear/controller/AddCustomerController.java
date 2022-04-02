@@ -9,11 +9,10 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,18 +30,38 @@ public class AddCustomerController implements Initializable {
     @FXML
     private ComboBox<String> countryComboBox;
     @FXML
-    private ComboBox<String> fldComboBox;
+    private ComboBox<FirstLevelDivision> fldComboBox;
     @FXML
     private Button cancelButton;
     @FXML
     private Button addButton;
 
-    private final FilteredList<String> displayedFirstLevelDivisions =
-            new FilteredList<>(FXCollections.observableArrayList(FirstLevelDivision.getFldNames()));
+    private final FilteredList<FirstLevelDivision> displayedFirstLevelDivisions =
+            new FilteredList<>(FXCollections.observableArrayList(DbManager.getAllFirstLevelDivisions()));
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         countryComboBox.setItems(FXCollections.observableArrayList(Country.getCountryNames()));
+        // Create a custom cell factory for the fldComboBox so that the displayed value is the fld's name.
+        Callback<ListView<FirstLevelDivision>, ListCell<FirstLevelDivision>> cellFactory =
+                new Callback<>() {
+                    @Override
+                    public ListCell<FirstLevelDivision> call(ListView<FirstLevelDivision> list) {
+                        return new ListCell<>() {
+                            @Override
+                            protected void updateItem(FirstLevelDivision firstLevelDivision, boolean empty) {
+                                super.updateItem(firstLevelDivision, empty);
+                                if (firstLevelDivision == null || empty) {
+                                    setGraphic(null);
+                                } else {
+                                    setText(firstLevelDivision.getName());
+                                }
+                            }
+                        };
+                    }
+                };
+        fldComboBox.setButtonCell(cellFactory.call(null));
+        fldComboBox.setCellFactory(cellFactory);
         fldComboBox.setItems(displayedFirstLevelDivisions);
     }
 
@@ -50,12 +69,15 @@ public class AddCustomerController implements Initializable {
     private void onCountryChange(ActionEvent e) {
         String newCountry = countryComboBox.getValue();
         displayedFirstLevelDivisions.setPredicate(fld -> DbManager.isAssociatedWithCountry(fld, newCountry));
+        if(!DbManager.isAssociatedWithCountry(fldComboBox.getValue(), newCountry)) {
+            fldComboBox.setValue(null);
+        }
     }
 
     @FXML
     private void onAddButtonClicked(MouseEvent e) {
         DbManager.addCustomer(nameField.getText(), addressField.getText(), postalCode.getText(),
-                              phoneNumber.getText(), DbManager.getFldId(fldComboBox.getValue()));
+                              phoneNumber.getText(), fldComboBox.getValue().getId());
         try {
             uiManager.loadScene("customers", (Stage) addButton.getScene().getWindow(), "1200x800");
         } catch(IOException ex) {
