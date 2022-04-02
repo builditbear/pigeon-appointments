@@ -24,28 +24,18 @@ public final class DbManager {
      * @param type The kind of appointment taking place.
      * @param start A LocalDateTime object representing the appointment's starting time.
      * @param end A LocalDateTime object representing the appointment's end time.
-     * @param customerName The name of the customer this appointment is being held with.
-     * @param contactName The name of the contact to be associated with this appointment.
+     * @param customerId The id of the customer this appointment is being held with.
+     * @param contactId The id of the contact to be associated with this appointment.
      * @return 1 if the add operation was successful, and 0 if an exception was thrown during interaction with SQL
      * database or input was improperly formatted.
      */
     public static int addAppointment(String title, String description, String location, String type,
-                                     LocalDateTime start, LocalDateTime end, String customerName, String contactName) {
+                                     LocalDateTime start, LocalDateTime end, int customerId, int contactId) {
         Connection connection = ConnectionManager.getConnection();
         try {
             PreparedStatement addRecord = connection.prepareStatement("INSERT INTO appointments VALUES " +
                     "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
             User user = ConnectionManager.getCurrentUser();
-            int customerId;
-            int contactId;
-            try {
-                customerId = getCustomer(customerName).getId();
-                contactId = getContact(contactName).getId();
-            } catch(NullPointerException ex) {
-                System.out.println("The customer or contact name given for this appointment does not match any records.");
-                System.out.println("Check the names spelling and try again.");
-                return -1;
-            }
             Object[] parameters = {title, description, location, type, start, end, user.getName(), user.getName(),
                                    Integer.toString(customerId),
                                    Integer.toString(user.getId()),
@@ -94,27 +84,6 @@ public final class DbManager {
     }
 
     /**
-     * Retrieves a new Contact object representing the SQL record corresponding to the given contact name. The contact
-     * name is assumed to be unique, as it will return the first matching record found otherwise.
-     * @param contact The name of the contact in question.
-     * @return A Contact object with data corresponding to the first SQL record matching the given name.
-     */
-    public static Contact getContact(String contact) {
-        Connection connection = ConnectionManager.getConnection();
-        try {
-            PreparedStatement contactQuery =
-                    connection.prepareStatement("SELECT * FROM contacts WHERE Contact_Name = ?");
-            contactQuery.setString(1, contact);
-            ResultSet queryResult = contactQuery.executeQuery();
-            return createContact(queryResult);
-        } catch(SQLException ex) {
-            System.out.println("SQLException occurred in method getContact:");
-            System.out.println(ex.getMessage());
-            return null;
-        }
-    }
-
-    /**
      * Retrieves the Country data corresponding to the given id from the database.
      * @param countryId The id of the country in question.
      * @return An object representing the country data retrieved from the database.
@@ -129,28 +98,6 @@ public final class DbManager {
             return createCountry(queryResult);
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method getCountry(countryId):");
-            System.out.println(ex.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Alternate method for country lookup which takes the country's name (under the assumption that all country names
-     * are unique) instead of an id.
-     * @param name The unique name of the country we wish to retrieve from the database.
-     * @return A Country object representing the country data retrieved from the database. Null if the country does not
-     * exist in the database.
-     */
-    public static Country getCountry(String name) {
-        Connection connection = ConnectionManager.getConnection();
-        PreparedStatement selectQuery;
-        try {
-            selectQuery = connection.prepareStatement("SELECT * FROM countries WHERE Division = ?");
-            selectQuery.setString(1, name);
-            ResultSet queryResult = selectQuery.executeQuery();
-            return createCountry(queryResult);
-        } catch(SQLException ex) {
-            System.out.println("An SQLException occurred in method getCountry(name):");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -174,17 +121,6 @@ public final class DbManager {
             } else {
                 return null;
             }
-        } catch(SQLException ex) {
-            System.out.println("An SQLException occurred in method getCustomer:");
-            System.out.println(ex.getMessage());
-            return null;
-        }
-    }
-
-    public static Customer getCustomer(String customer) {
-        try (ResultSet result = processQuery("SELECT * FROM customers WHERE Customer_Name = ?",
-                new Object[] {customer})){
-            return createCustomer(result);
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method getCustomer:");
             System.out.println(ex.getMessage());
@@ -249,7 +185,11 @@ public final class DbManager {
             selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division_ID = ?");
             selectQuery.setString(1, Integer.toString(fldId));
             ResultSet queryResult = selectQuery.executeQuery();
-            return createFirstLevelDivision(queryResult);
+            if(queryResult.next()) {
+                return createFirstLevelDivision(queryResult);
+            } else {
+                throw new NullPointerException("The query returned no results.");
+            }
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method getFirstLevelDivision:");
             System.out.println(ex.getMessage());
@@ -257,41 +197,26 @@ public final class DbManager {
         }
     }
 
-    /**
-     * Alternate lookup method for FirstLevelDivision records which takes the name associated with the
-     * FirstLevelDivision instead.
-     * @param name The name associated with the FirstLevelDivision in question.
-     * @return A FirstLevelDivision object reflecting the data associated with the given name in the database.
-     */
-    public static FirstLevelDivision getFirstLevelDivision(String name) {
-        Connection connection = ConnectionManager.getConnection();
-        PreparedStatement selectQuery;
-        try {
-            selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division = ?");
-            selectQuery.setString(1, name);
-            ResultSet queryResult = selectQuery.executeQuery();
-            return createFirstLevelDivision(queryResult);
-        } catch(SQLException ex) {
-            System.out.println("An SQLException occurred in method getFirstLevelDivision(name):");
-            System.out.println(ex.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Retrieve the ID of the First Level Division corresponding to the name passed in.
-     * @param firstLevelDivisionName The name of the First Level Division we want the ID for.
-     * @return The ID of the First Level Division corresponding to the name passed in, or -1 if no division matching
-     * that name exists in the database.
-     */
-    public static int getFldId(String firstLevelDivisionName) {
-        FirstLevelDivision fld = getFirstLevelDivision(firstLevelDivisionName);
-        if(fld != null) {
-            return fld.getId();
-        } else {
-            return -1;
-        }
-    }
+//    /**
+//     * Alternate lookup method for FirstLevelDivision records which takes the name associated with the
+//     * FirstLevelDivision instead.
+//     * @param name The name associated with the FirstLevelDivision in question.
+//     * @return A FirstLevelDivision object reflecting the data associated with the given name in the database.
+//     */
+//    public static FirstLevelDivision getFirstLevelDivision(String name) {
+//        Connection connection = ConnectionManager.getConnection();
+//        PreparedStatement selectQuery;
+//        try {
+//            selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division = ?");
+//            selectQuery.setString(1, name);
+//            ResultSet queryResult = selectQuery.executeQuery();
+//            return createFirstLevelDivision(queryResult);
+//        } catch(SQLException ex) {
+//            System.out.println("An SQLException occurred in method getFirstLevelDivision(name):");
+//            System.out.println(ex.getMessage());
+//            return null;
+//        }
+//    }
 
     /**
      * Creates a new Contact object based on the info contained in the given ResultSet.
@@ -470,11 +395,11 @@ public final class DbManager {
             updateRecord = connection.prepareStatement(
                     "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?" +
                             ", Last_Update = NOW(), Last_Updated_By = ? WHERE Customer_ID = ?");
-            Object[] parameters = {name, address, postalCode, phone, fldId, ConnectionManager.getCurrentUser()};
+            Object[] parameters = {name, address, postalCode, phone, fldId, ConnectionManager.getCurrentUser().getName(), customerId};
             for(int i = 1; i <= parameters.length; i++) {
                 updateRecord.setObject(i, parameters[i - 1]);
             }
-            updateRecord.setString(7, Integer.toString(customerId));
+//            updateRecord.setString(7, Integer.toString(customerId));
             return updateRecord.executeUpdate();
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method updateCustomer:");

@@ -1,10 +1,13 @@
 package dev.builditbear.controller;
 
+import dev.builditbear.model.Appointment;
 import dev.builditbear.model.Customer;
 import dev.builditbear.utility.uiManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -14,6 +17,18 @@ import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
 
+    @FXML
+    private TableView appointmentsTable;
+    @FXML
+    private TableColumn<Appointment, Integer> appointmentId;
+    @FXML
+    private TableColumn<Appointment, String> title;
+    @FXML
+    private TableColumn<Appointment, String> description;
+    @FXML
+    private TableColumn<Appointment, String> location;
+    @FXML
+    private TableColumn<Appointment, Integer> contact;
     @FXML
     private Button viewCustomers;
 

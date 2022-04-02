@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,6 +43,18 @@ public class UpdateCustomerController implements Initializable {
     private final FilteredList<FirstLevelDivision> displayedFirstLevelDivisions =
             new FilteredList<>(FXCollections.observableArrayList(DbManager.getAllFirstLevelDivisions()));
 
+    private static class fldComboCell extends ListCell<FirstLevelDivision> {
+        @Override
+        protected void updateItem(FirstLevelDivision firstLevelDivision, boolean empty) {
+            super.updateItem(firstLevelDivision, empty);
+            if (firstLevelDivision == null || empty) {
+                setGraphic(null);
+            } else {
+                setText(firstLevelDivision.getName());
+            }
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Customer selectedCustomer = CustomersController.getSelectedCustomer();
@@ -52,37 +65,33 @@ public class UpdateCustomerController implements Initializable {
         phoneNumber.setText(selectedCustomer.getPhone());
 
         countryComboBox.setItems(FXCollections.observableArrayList(Country.getCountryNames()));
-        // Create a custom cell factory for the fldComboBox so that the displayed value is the fld's name.
-        Callback<ListView<FirstLevelDivision>, ListCell<FirstLevelDivision>> cellFactory =
-                new Callback<>() {
-                    @Override
-                    public ListCell<FirstLevelDivision> call(ListView<FirstLevelDivision> list) {
-                        return new ListCell<>() {
-                            @Override
-                            protected void updateItem(FirstLevelDivision firstLevelDivision, boolean empty) {
-                                super.updateItem(firstLevelDivision, empty);
-                                if (firstLevelDivision == null || empty) {
-                                    setGraphic(null);
-                                } else {
-                                    setText(firstLevelDivision.getName());
-                                }
-                            }
-                        };
-                    }
-                };
-        fldComboBox.setButtonCell(cellFactory.call(null));
-        fldComboBox.setCellFactory(cellFactory);
         fldComboBox.setItems(displayedFirstLevelDivisions);
+        // Create a custom cell factory for the fldComboBox so that the displayed value is the fld's name.
+        fldComboBox.setButtonCell(new fldComboCell());
+        // Lambda usage 3.
+        fldComboBox.setCellFactory(list -> new fldComboCell());
+        fldComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(FirstLevelDivision fld) {
+                if (fld == null) {
+                    return "";
+                } else {
+                    return fld.getName();
+                }
+            }
 
-        String fldName;
-        String countryName;
+            @Override
+            public FirstLevelDivision fromString(String s) {
+                return null;
+            }
+        });
 
         FirstLevelDivision fld = DbManager.getFirstLevelDivision(selectedCustomer.getDivisionId());
         if(fld != null) {
             Country country = DbManager.getCountry(fld.getCountryId());
             if(country != null) {
                 countryComboBox.setValue(country.getName());
-                // Lambda expression usage 1.
+                // Lambda expression usage 1 -- update the display list predicate.
                 displayedFirstLevelDivisions.setPredicate(fldEntry -> DbManager.isAssociatedWithCountry(fldEntry, countryComboBox.getValue()));
             } else {
                 System.out.println("Unable to populate First Level Division due to invalid name.");
@@ -98,6 +107,8 @@ public class UpdateCustomerController implements Initializable {
         String newCountry = countryComboBox.getValue();
         // Lambda expression usage 2.
         displayedFirstLevelDivisions.setPredicate(fld -> DbManager.isAssociatedWithCountry(fld, countryComboBox.getValue()));
+        // If the selected First Level Division in the combobox no longer belongs to the selected country, it should
+        // be cleared.
         if(!DbManager.isAssociatedWithCountry(fldComboBox.getValue(), newCountry)) {
             fldComboBox.setValue(null);
         }
@@ -107,6 +118,7 @@ public class UpdateCustomerController implements Initializable {
     private void onUpdateButtonClicked(MouseEvent e) {
         DbManager.updateCustomer(Integer.parseInt(idField.getText()), nameField.getText(), addressField.getText(),
                                  postalCode.getText(), phoneNumber.getText(), fldComboBox.getValue().getId());
+        CustomersController.clearSelectedCustomer();
         try {
             uiManager.loadScene("customers", (Stage) updateButton.getScene().getWindow(), "1200x800");
         } catch(IOException ex) {

@@ -48,7 +48,7 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </HBox.margin>
             </ComboBox>
-            <ComboBox fx:id="fldComboBox" prefWidth="500.0" promptText="--First Level Division--">
+            <ComboBox fx:id="fldComboBox" prefWidth="200.0" promptText="First Level Division">
                <HBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </HBox.margin>

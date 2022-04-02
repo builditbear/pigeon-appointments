@@ -53,18 +53,18 @@
             <Insets left="15.0" right="15.0" top="15.0" />
          </VBox.margin>
       </HBox>
-      <TableView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <TableView fx:id="appointmentsTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn prefWidth="75.0" text="Appointment ID" />
-          <TableColumn prefWidth="75.0" text="Title" />
-            <TableColumn prefWidth="75.0" text="Description" />
-            <TableColumn prefWidth="75.0" text="Location" />
-            <TableColumn prefWidth="75.0" text="Contact" />
-            <TableColumn prefWidth="75.0" text="Type" />
-            <TableColumn prefWidth="75.0" text="Start" />
-            <TableColumn prefWidth="75.0" text="End" />
-            <TableColumn prefWidth="75.0" text="Customer ID" />
-            <TableColumn prefWidth="75.0" text="User ID" />
+          <TableColumn fx:id="appointmentId" prefWidth="75.0" text="Appointment ID" />
+          <TableColumn fx:id="title" prefWidth="75.0" text="Title" />
+            <TableColumn fx:id="description" prefWidth="75.0" text="Description" />
+            <TableColumn fx:id="location" prefWidth="75.0" text="Location" />
+            <TableColumn fx:id="contact" prefWidth="75.0" text="Contact" />
+            <TableColumn fx:id="type" prefWidth="75.0" text="Type" />
+            <TableColumn fx:id="start" prefWidth="75.0" text="Start" />
+            <TableColumn fx:id="end" prefWidth="75.0" text="End" />
+            <TableColumn fx:id="customerId" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="userId" prefWidth="75.0" text="User ID" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
