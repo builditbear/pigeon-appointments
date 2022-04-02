@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.builditbear.controller.UpdateCustomerController">
+   <children>
+      <Label text="Update Customer">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="ID" />
+            <TextField fx:id="idField" disable="true" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Name" />
+            <TextField fx:id="nameField" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Address" />
+            <TextField fx:id="addressField" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Postal Code" />
+            <TextField fx:id="postalCode" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Phone Number" />
+            <TextField fx:id="phoneNumber" />
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <ComboBox fx:id="countryComboBox" onAction="#onCountryChange" prefWidth="150.0" promptText="Country">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+            <ComboBox fx:id="fldComboBox" prefWidth="150.0" promptText="First Level Division">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+         </children>
+      </HBox>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+          <Button fx:id="updateButton" mnemonicParsing="false" onMouseClicked="#onUpdateButtonClicked" text="Update" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" text="Cancel" />
+        </buttons>
+      </ButtonBar>
+   </children>
+   <padding>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+   </padding>
+</VBox>

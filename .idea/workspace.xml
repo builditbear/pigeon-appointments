@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49164964-80c4-4c68-b53a-58b56cffed0f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/updateCustomer.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateCustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateCustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addCustomer.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addCustomer.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/appointments.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/appointments.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,21 +82,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java</url>
-          <line>130</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java</url>
-          <line>391</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

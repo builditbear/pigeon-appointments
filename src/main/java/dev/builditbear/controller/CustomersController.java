@@ -3,8 +3,11 @@ package dev.builditbear.controller;
 import dev.builditbear.App;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Customer;
+import dev.builditbear.model.FirstLevelDivision;
 import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.uiManager;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,7 +52,7 @@ public class CustomersController implements Initializable {
     @FXML
     private TableColumn<Customer, String> lastUpdatedBy;
     @FXML
-    private TableColumn<Customer, Integer> firstLevelDivision;
+    private TableColumn<Customer, String> firstLevelDivision;
     @FXML
     private Button deleteButton;
     @FXML
@@ -111,7 +115,7 @@ public class CustomersController implements Initializable {
                                   TableColumn<Customer, String> address, TableColumn<Customer, String> postalCode,
                                   TableColumn<Customer, String> phone, TableColumn<Customer, LocalDateTime> createDate,
                                   TableColumn<Customer, String> createdBy, TableColumn<Customer, Timestamp> lastUpdate,
-                                  TableColumn<Customer, String> lastUpdatedBy, TableColumn<Customer, Integer> divisionId) {
+                                  TableColumn<Customer, String> lastUpdatedBy, TableColumn<Customer, String> firstLevelDivision) {
         customerTable.setItems(customers);
         customerId.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -122,7 +126,11 @@ public class CustomersController implements Initializable {
         createdBy.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
         lastUpdate.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
         lastUpdatedBy.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
-        divisionId.setCellValueFactory(new PropertyValueFactory<>("divisionId"));
+        // Lambda usage 4 -- Used to render the associated fld's name instead of its ID as contained in the Customer object.
+        firstLevelDivision.setCellValueFactory(customer -> {
+            FirstLevelDivision fld = DbManager.getFirstLevelDivision(customer.getValue().getDivisionId());
+            return new ReadOnlyObjectWrapper(fld.getName());
+        });
     }
 
     @FXML
