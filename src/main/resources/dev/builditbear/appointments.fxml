@@ -44,7 +44,7 @@
                   <Button mnemonicParsing="false" text="Previous Week" />
                   <Button mnemonicParsing="false" text="Next Week" />
                   <Label alignment="CENTER" text="Week" />
-                  <ToggleButton mnemonicParsing="false" prefHeight="36.0" text="Toggle View" />
+                  <ToggleButton fx:id="toggleView" mnemonicParsing="false" prefHeight="36.0" text="Toggle View" />
                   <Label alignment="CENTER" text="Month" />
                </buttons>
             </ButtonBar>
@@ -83,8 +83,8 @@
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <buttons>
                   <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddClicked" text="Add" />
-                <Button mnemonicParsing="false" text="Update" />
-                  <Button mnemonicParsing="false" text="Delete" />
+                <Button fx:id="updateButton" mnemonicParsing="false" text="Update" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#onDeleteClicked" text="Delete" />
               </buttons>
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

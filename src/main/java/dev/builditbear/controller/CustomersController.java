@@ -129,7 +129,7 @@ public class CustomersController implements Initializable {
         // Lambda usage 4 -- Used to render the associated fld's name instead of its ID as contained in the Customer object.
         firstLevelDivision.setCellValueFactory(customer -> {
             FirstLevelDivision fld = DbManager.getFirstLevelDivision(customer.getValue().getDivisionId());
-            return new ReadOnlyObjectWrapper(fld.getName());
+            return new ReadOnlyObjectWrapper<>(fld.getName());
         });
     }
 

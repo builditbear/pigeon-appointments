@@ -1,6 +1,7 @@
 package dev.builditbear.db_interface;
 
 import dev.builditbear.model.*;
+import dev.builditbear.utility.TimeConversion;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,9 @@ public final class DbManager {
     }
 
     /**
-     * Adds a new appointment record to the database.
+     * Adds a new appointment record to the database. Note that it is the responsibility of any method calling this method
+     * to ensure that the customerId and contactId passed to this method are valid, as an SQLException due to a foreign
+     * key error will be thrown otherwise.
      * @param title The appointment's title.
      * @param description A brief description of the appointment's purpose.
      * @param location A brief description of where the appointment is to take place.
@@ -37,9 +40,7 @@ public final class DbManager {
                     "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
             User user = ConnectionManager.getCurrentUser();
             Object[] parameters = {title, description, location, type, start, end, user.getName(), user.getName(),
-                                   Integer.toString(customerId),
-                                   Integer.toString(user.getId()),
-                                   Integer.toString(contactId)};
+                                   customerId, user.getId(), contactId};
             for(int i = 1; i <= parameters.length; i++) {
                 addRecord.setObject(i, parameters[i - 1]);
             }
@@ -80,6 +81,23 @@ public final class DbManager {
             System.out.println("An SQLException occurred in method addCustomer:");
             System.out.println(ex.getMessage());
             return 0;
+        }
+    }
+
+    /**
+     * Retrieves a new Contact object matching the given ID from the SQL database.
+     * @param contactId The ID of the Contact record we want as an object.
+     * @return A new Contact object matching the given ID, or null if an error is encountered or no Contact record with
+     * that ID exists in the database.
+     */
+    public static Contact getContact(int contactId) {
+        Object[] parameters = {contactId};
+        try(ResultSet result = processQuery("SELECT * FROM contacts WHERE Contact_ID = ?", parameters)) {
+            return createContact(result);
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getContact:");
+            System.out.println(ex.getMessage());
+            return null;
         }
     }
 
@@ -154,6 +172,28 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves an ArrayList of all Appointment objects on file within the SQL database.
+     * @return An ArrayList of Appointment objects representing every appointment record in the SQL database, or null
+     * if a communication error is encountered.
+     */
+    public static ArrayList<Appointment> getAllAppointments() {
+        try(ResultSet results = processQuery("SELECT * FROM appointments")) {
+            ArrayList<Appointment> appointments = new ArrayList<>();
+            boolean moreRows = results.next();
+            while(moreRows) {
+                Appointment a = createAppointment(results);
+                appointments.add(a);
+                moreRows = results.next();
+            }
+            return appointments;
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getAllAppointments:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
     public static ArrayList<FirstLevelDivision> getAllFirstLevelDivisions() {
         try {
             ResultSet queryResult = processQuery("SELECT * FROM first_level_divisions");
@@ -217,6 +257,44 @@ public final class DbManager {
 //            return null;
 //        }
 //    }
+
+    /**
+     * Create a new Appointment object reflecting the Appointment record info in the ResultSet passed in.
+     * @param results A ResultSet containing at least one Appointment record, with a pointer currently placed immediately
+     *                before the record to be converted into an Appointment object (which is the default state for any
+     *                non-empty ResultSet).
+     * @return A new Appointment object.
+     * @throws SQLException Thrown in the event of a communication error with the SQL database via the ResultSet.
+     */
+    private static Appointment createAppointment(ResultSet results) throws SQLException{
+        try{
+            int id = results.getInt(1);
+            String title = results.getString(2);
+            String description = results.getString(3);
+            String location = results.getString(4);
+            String type = results.getString(5);
+            LocalDateTime start = TimeConversion.timestampToLocalDateTime(results.getTimestamp(6));
+            LocalDateTime end = TimeConversion.timestampToLocalDateTime(results.getTimestamp(7));
+            LocalDateTime createDate = TimeConversion.timestampToLocalDateTime(results.getTimestamp(8));
+            String createdBy = results.getString(9);
+            LocalDateTime lastUpdate = TimeConversion.timestampToLocalDateTime(results.getTimestamp(10));
+            String lastUpdatedBy = results.getString(11);
+            int customerId = results.getInt(12);
+            int userId = results.getInt(13);
+            int contactId = results.getInt(14);
+
+            return new Appointment(id, title, description, location, type, start, end, createDate, createdBy,
+                    lastUpdate, lastUpdatedBy, customerId, userId, contactId);
+        } catch(SQLException ex) {
+            System.out.println("An SQLException occurred in method createAppointment:");
+            System.out.println(ex.getMessage());
+            return null;
+        } catch(NullPointerException ex) {
+            System.out.println("A NullPointerException occurred in method createAppointment:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
 
     /**
      * Creates a new Contact object based on the info contained in the given ResultSet.
@@ -334,6 +412,22 @@ public final class DbManager {
     }
 
     /**
+     * Removes the appointment corresponding to the given appointment ID from the database.
+     * @param appointmentId The ID of the appointment we wish to remove from the database.
+     * @return 1 if the appointment was successfully deleted, and 0 otherwise.
+     */
+    public static int removeAppointment(int appointmentId) {
+        Object[] parameters = {appointmentId};
+        try {
+            return processUpdate("DELETE FROM appointments WHERE Appointment_ID = ?", parameters);
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method removeAppointment:");
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
+
+    /**
      * Removes the customer associated with the provided customerId from the database.
      * @param customerId The ID of the customer we wish to remove from the database.
      * @return If the deletion is successful, the integer 1 is returned, since executeUpdate() returns the number of
@@ -435,5 +529,14 @@ public final class DbManager {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement query = connection.prepareStatement(queryString);
         return query.executeQuery();
+    }
+
+    private static int processUpdate(String updateString, Object[] parameters) throws SQLException {
+        Connection connection = ConnectionManager.getConnection();
+        PreparedStatement query = connection.prepareStatement(updateString);
+        for(int i = 1; i <= parameters.length; i++) {
+            query.setObject(i, parameters[i - 1]);
+        }
+        return query.executeUpdate();
     }
 }

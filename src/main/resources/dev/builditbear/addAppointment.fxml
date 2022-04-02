@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.builditbear.controller.AddAppointmentController">
+   <children>
+      <Label text="Add Appointment">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Title" />
+            <TextField fx:id="title" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Description" />
+            <TextField fx:id="description" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Location" />
+            <TextField fx:id="location" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Contact" />
+            <ComboBox fx:id="contactComboBox" prefWidth="150.0" promptText="Select One">
+               <HBox.margin>
+                  <Insets bottom="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Type" />
+            <TextField fx:id="type" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="242.0" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="Start Time" />
+            <ComboBox fx:id="contactComboBox1" prefWidth="150.0" promptText="Available Times">
+               <HBox.margin>
+                  <Insets bottom="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="302.0" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label prefWidth="100.0" text="End Time" />
+            <ComboBox fx:id="contactComboBox11" prefWidth="150.0" promptText="Available Times">
+               <HBox.margin>
+                  <Insets bottom="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <ComboBox fx:id="customerIdComboBox" prefWidth="150.0" promptText="Customer ID">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+            <ComboBox fx:id="appointmentIdComboBox" prefWidth="200.0" promptText="Appointment ID">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </ComboBox>
+         </children>
+      </HBox>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+          <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddButtonClicked" text="Add" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" text="Cancel" />
+        </buttons>
+      </ButtonBar>
+   </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</VBox>
