@@ -2,6 +2,7 @@ package dev.builditbear.utility;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +44,20 @@ public final class TimeConversion {
         return timestamp.toLocalDateTime();
     }
 
-    public static Timestamp localDateTimeToTimestamp(LocalDateTime localDateTime) {
-        return Timestamp.valueOf(localDateTime);
+    public static Timestamp localDateTimeToTimestamp(LocalDateTime ldt) {
+        return Timestamp.valueOf(ldt);
+    }
+
+    /**
+     * Converts the provided time and date at the given timezone into the equivalent time and date at the user's local timezone.
+     * @param foreignTime A time and date at some timezone other than the user's local timezone.
+     * @param zoneId The Timezone ID for the date and time of day described by foreignTime.
+     * @return A LocalDateTime object representing the same point in time as the LocalDateTime passed in, but at the user's
+     * local timezone.
+     */
+    public static LocalDateTime toLocalTimeZone(LocalDateTime foreignTime, String zoneId) {
+        ZonedDateTime zonedForeignTime = foreignTime.atZone(ZoneId.of(zoneId));
+        ZonedDateTime zonedLocalTime = zonedForeignTime.withZoneSameInstant(TimeZone.getDefault().toZoneId());
+        return zonedLocalTime.toLocalDateTime();
     }
 }

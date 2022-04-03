@@ -39,8 +39,8 @@ public final class DbManager {
             PreparedStatement addRecord = connection.prepareStatement("INSERT INTO appointments VALUES " +
                     "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
             User user = ConnectionManager.getCurrentUser();
-            Object[] parameters = {title, description, location, type, start, end, user.getName(), user.getName(),
-                                   customerId, user.getId(), contactId};
+            Object[] parameters = {title, description, location, type, Timestamp.valueOf(start), Timestamp.valueOf(end),
+                    user.getName(), user.getName(), customerId, user.getId(), contactId};
             for(int i = 1; i <= parameters.length; i++) {
                 addRecord.setObject(i, parameters[i - 1]);
             }
