@@ -1,10 +1,7 @@
 package dev.builditbear.utility;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
@@ -17,8 +14,8 @@ public final class TimeConversion {
         throw new RuntimeException("Instantiation of TimeConversion is not allowed.");
     }
 
-    private static final DateTimeFormatter standard = DateTimeFormatter.ofPattern("hh:mm:ss a");
-    private static final DateTimeFormatter showTimezone= DateTimeFormatter.ofPattern("hh:mm:ss a z");
+    public static final DateTimeFormatter standard = DateTimeFormatter.ofPattern("LLL dd, yyyy @ hh:mm a");
+    public static final DateTimeFormatter showTimezone= DateTimeFormatter.ofPattern("hh:mm:ss a z");
 
     /**
      * Converts a given LocalDateTime object's time into a formatted String in UTC time.
@@ -55,8 +52,8 @@ public final class TimeConversion {
      * @return A LocalDateTime object representing the same point in time as the LocalDateTime passed in, but at the user's
      * local timezone.
      */
-    public static LocalDateTime toLocalTimeZone(LocalDateTime foreignTime, String zoneId) {
-        ZonedDateTime zonedForeignTime = foreignTime.atZone(ZoneId.of(zoneId));
+    public static LocalDateTime toLocalTimeZone(LocalDateTime foreignTime, ZoneId zoneId) {
+        ZonedDateTime zonedForeignTime = foreignTime.atZone(zoneId);
         ZonedDateTime zonedLocalTime = zonedForeignTime.withZoneSameInstant(TimeZone.getDefault().toZoneId());
         return zonedLocalTime.toLocalDateTime();
     }

@@ -1,9 +1,11 @@
 package dev.builditbear.db_interface;
 
+import dev.builditbear.controller.AppointmentsController;
 import dev.builditbear.model.*;
 import dev.builditbear.utility.TimeConversion;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -236,27 +238,6 @@ public final class DbManager {
             return null;
         }
     }
-
-//    /**
-//     * Alternate lookup method for FirstLevelDivision records which takes the name associated with the
-//     * FirstLevelDivision instead.
-//     * @param name The name associated with the FirstLevelDivision in question.
-//     * @return A FirstLevelDivision object reflecting the data associated with the given name in the database.
-//     */
-//    public static FirstLevelDivision getFirstLevelDivision(String name) {
-//        Connection connection = ConnectionManager.getConnection();
-//        PreparedStatement selectQuery;
-//        try {
-//            selectQuery = connection.prepareStatement("SELECT * FROM first_level_divisions WHERE Division = ?");
-//            selectQuery.setString(1, name);
-//            ResultSet queryResult = selectQuery.executeQuery();
-//            return createFirstLevelDivision(queryResult);
-//        } catch(SQLException ex) {
-//            System.out.println("An SQLException occurred in method getFirstLevelDivision(name):");
-//            System.out.println(ex.getMessage());
-//            return null;
-//        }
-//    }
 
     /**
      * Create a new Appointment object reflecting the Appointment record info in the ResultSet passed in.
@@ -538,5 +519,50 @@ public final class DbManager {
             query.setObject(i, parameters[i - 1]);
         }
         return query.executeUpdate();
+    }
+
+    /**
+     * Generates a list of available times on a given date for scheduling appointments.
+     * @param date The date we are retrieving available appointment times for.
+     * @return An ArrayList of available times for scheduling, in order from soonest to latest.
+     */
+    public static ArrayList<LocalDateTime> getAvailableAppointmentTimes(LocalDate date) {
+        ArrayList<LocalDateTime> appointmentTimes = new ArrayList<>();
+        LocalDateTime businessOpen = TimeConversion.toLocalTimeZone(
+                LocalDateTime.of(date, AppointmentsController.getBusinessOpen()),
+                AppointmentsController.getBusinessTimezone());
+        LocalDateTime businessClose = TimeConversion.toLocalTimeZone(
+                LocalDateTime.of(date, AppointmentsController.getBusinessClose()),
+                AppointmentsController.getBusinessTimezone());
+        int appointmentIntervalInMinutes = 30;
+        for(int i = 0; businessOpen.plusMinutes(i).isBefore(businessClose) ||
+                       businessOpen.plusMinutes(i).isEqual(businessClose); i += appointmentIntervalInMinutes) {
+            appointmentTimes.add(businessOpen.plusMinutes(i));
+        }
+        // Lambda usage 5
+        appointmentTimes.removeIf(appointmentTime -> getBookedAppointmentTimes().contains(appointmentTime));
+        return appointmentTimes;
+    }
+
+    /**
+     * Generates an ArrayList of LocalDateTime objects representing the start times for all appointments currently
+     * in the database. In the future, this method will accept a date by which to filter the records search, as
+     * this method's runtime will scale linearly with the amount of appointments (including past ones) in the database.
+     * @return An ArrayList representing the start times and dates for all currently scheduled appointments.
+     */
+    public static ArrayList<LocalDateTime> getBookedAppointmentTimes() {
+        try(ResultSet result = processQuery("SELECT * FROM appointments")) {
+            ArrayList<LocalDateTime> bookedAppointmentTimes = new ArrayList<>();
+            boolean moreRows = result.next();
+            while(moreRows) {
+                bookedAppointmentTimes.add(result.getTimestamp(6).toLocalDateTime());
+                moreRows = result.next();
+            }
+            return bookedAppointmentTimes;
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getAllAppointments:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 }

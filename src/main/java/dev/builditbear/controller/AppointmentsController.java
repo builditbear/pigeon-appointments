@@ -5,6 +5,7 @@ import dev.builditbear.model.Appointment;
 import dev.builditbear.model.Contact;
 import dev.builditbear.model.Customer;
 import dev.builditbear.utility.Alerts;
+import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -21,9 +22,26 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
+    // Business hours in Eastern Standard Time.
+    private static final LocalTime businessOpen = LocalTime.of(8, 0);
+    private static final LocalTime businessClose = LocalTime.of(22, 0);
+    private static final ZoneId businessTimezone = ZoneId.of("EST");
+
+    public static LocalTime getBusinessOpen() {
+        return businessOpen;
+    }
+    public static LocalTime getBusinessClose() {
+        return businessClose;
+    }
+
+    public static ZoneId getBusinessTimezone() {
+        return businessTimezone;
+    }
 
     @FXML
     private TableView<Appointment> appointmentsTable;
@@ -40,9 +58,9 @@ public class AppointmentsController implements Initializable {
     @FXML
     private TableColumn<Appointment, String> type;
     @FXML
-    private TableColumn<Appointment, LocalDateTime> start;
+    private TableColumn<Appointment, String> start;
     @FXML
-    private TableColumn<Appointment, LocalDateTime> end;
+    private TableColumn<Appointment, String> end;
     @FXML
     private TableColumn<Appointment, Integer> customerId;
     @FXML
@@ -62,7 +80,7 @@ public class AppointmentsController implements Initializable {
                                            TableColumn<Appointment, Integer> appointmentId, TableColumn<Appointment, String> title,
                                            TableColumn<Appointment, String> description, TableColumn<Appointment, String> location,
                                            TableColumn<Appointment, String> contact, TableColumn<Appointment, String> type,
-                                           TableColumn<Appointment, LocalDateTime> start, TableColumn<Appointment, LocalDateTime> end,
+                                           TableColumn<Appointment, String> start, TableColumn<Appointment, String> end,
                                            TableColumn<Appointment, Integer> customerId, TableColumn<Appointment, Integer> userId) {
         appointmentsTable.setItems(appointments);
         appointmentId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -75,8 +93,14 @@ public class AppointmentsController implements Initializable {
             return new ReadOnlyObjectWrapper<>(c.getContactName());
         });
         type.setCellValueFactory(new PropertyValueFactory<>("type"));
-        start.setCellValueFactory(new PropertyValueFactory<>("start"));
-        end.setCellValueFactory(new PropertyValueFactory<>("end"));
+        start.setCellValueFactory(appointment -> {
+            LocalDateTime ldt = appointment.getValue().getStart();
+            return new ReadOnlyObjectWrapper<>(ldt.format(TimeConversion.standard));
+        });
+        end.setCellValueFactory(appointment -> {
+            LocalDateTime ldt = appointment.getValue().getStart();
+            return new ReadOnlyObjectWrapper<>(ldt.format(TimeConversion.standard));
+        });
         customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
     }
