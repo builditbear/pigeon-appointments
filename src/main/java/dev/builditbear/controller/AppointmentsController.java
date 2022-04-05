@@ -3,7 +3,6 @@ package dev.builditbear.controller;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Appointment;
 import dev.builditbear.model.Contact;
-import dev.builditbear.model.Customer;
 import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
@@ -30,7 +29,7 @@ public class AppointmentsController implements Initializable {
     // Business hours in Eastern Standard Time.
     private static final LocalTime businessOpen = LocalTime.of(8, 0);
     private static final LocalTime businessClose = LocalTime.of(22, 0);
-    private static final ZoneId businessTimezone = ZoneId.of("EST");
+    private static final ZoneId businessTimezone = ZoneId.of("EST", ZoneId.SHORT_IDS);
 
     public static LocalTime getBusinessOpen() {
         return businessOpen;

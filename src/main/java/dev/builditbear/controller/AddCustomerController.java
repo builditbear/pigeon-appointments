@@ -63,6 +63,7 @@ public class AddCustomerController implements Initializable {
         fldComboBox.setButtonCell(cellFactory.call(null));
         fldComboBox.setCellFactory(cellFactory);
         fldComboBox.setItems(displayedFirstLevelDivisions);
+
     }
 
     @FXML
