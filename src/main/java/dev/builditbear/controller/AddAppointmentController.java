@@ -61,6 +61,8 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private void onDateChanged(ActionEvent e) {
         LocalDate newlySelectedDate = datePicker.getValue();
+        endComboBox.disableProperty().set(true);
+        endComboBox.setItems(null);
         ObservableList<LocalDateTime> availableAppointmentTimes =
                 FXCollections.observableArrayList(DbManager.getAvailableStartTimes(newlySelectedDate));
         startComboBox.setItems(availableAppointmentTimes);

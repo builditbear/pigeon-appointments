@@ -548,6 +548,7 @@ public final class DbManager {
      * Generates a list of available appointment end times on a given date for a given appointment start time. Note that
      * it is necessary to first know the appointment start time because the validity of an end time depends on whether
      * the appointment starts before or after any already booked appointment.
+     * @param date The date for which we are retrieving end appointment times for.
      * @param appointmentStart The start time of the appointment for which we are generating possible end times.
      * @return A list of available (that is, within business hours and not overlapping with any other existing
      * appointments) end times.
