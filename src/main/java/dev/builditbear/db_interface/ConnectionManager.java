@@ -81,38 +81,12 @@ public final class ConnectionManager {
                 return false;
             } else {
                 // Successful login.
-                fetchUserInfo(username);
+                currentUser = DbManager.getUser(username);
                 return true;
             }
         } catch(SQLException e) {
             System.out.println(bundle.getString("db_sql_error"));
             return false;
         }
-    }
-
-    private static void fetchUserInfo(String user) {
-        try {
-            PreparedStatement userQuery = connection.prepareStatement("SELECT * FROM users WHERE User_Name = ?");
-            userQuery.setString(1, user);
-            ResultSet queryResult = userQuery.executeQuery();
-            if(queryResult.next()) {
-                currentUser = createUser(queryResult);
-            }
-        } catch(SQLException ex) {
-            System.out.println("SQLException occurred in method fetchUserInfo:");
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    private static User createUser(ResultSet queryResult) throws SQLException{
-        int id = queryResult.getInt(1);
-        String name = queryResult.getString(2);
-        String password = queryResult.getString(3);
-        LocalDateTime createDate = queryResult.getTimestamp(4).toLocalDateTime();
-        String createdBy = queryResult.getString(5);
-        LocalDateTime lastupdate = queryResult.getTimestamp(6).toLocalDateTime();
-        String lastUpdatedBy = queryResult.getString(7);
-
-        return new User(id, name, password, createDate, createdBy, lastupdate, lastUpdatedBy);
     }
 }

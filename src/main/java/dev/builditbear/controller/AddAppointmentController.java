@@ -1,6 +1,9 @@
 package dev.builditbear.controller;
 
 import dev.builditbear.db_interface.DbManager;
+import dev.builditbear.model.Contact;
+import dev.builditbear.model.Customer;
+import dev.builditbear.model.User;
 import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
 import javafx.collections.FXCollections;
@@ -21,20 +24,52 @@ import java.util.ResourceBundle;
 
 public class AddAppointmentController implements Initializable {
     @FXML
+    private TextField titleField;
+    @FXML
+    private TextField descriptionField;
+    @FXML
+    private TextField locationField;
+    @FXML
+    private ComboBox<Contact> contactComboBox;
+    @FXML
+    private TextField typeField;
+    @FXML
     private DatePicker datePicker;
     @FXML
     private ComboBox<LocalDateTime> startComboBox;
     @FXML
     private ComboBox<LocalDateTime> endComboBox;
     @FXML
+    private ComboBox<Customer> customerIdComboBox;
+    @FXML
+    private ComboBox<User> userIdComboBox;
+    @FXML
+    private Button addButton;
+    @FXML
     private Button cancelButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        datePicker.setValue(LocalDate.now());
-        ObservableList<LocalDateTime> availableAppointmentTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue()));
-        startComboBox.setItems(availableAppointmentTimes);
+        // Initialize custom cell factories for each ComboBox so objects are displayed in a readable fashion to
+        // the user (as opposed to the default toString method of Object, which is what displays by default for non-primitive
+        // types.
+        Callback<ListView<Contact>, ListCell<Contact>> contactNameAndIdDisplayingCellFactory =
+                new Callback<>() {
+                    @Override
+                    public ListCell<Contact> call(ListView<Contact> list) {
+                        return new ListCell<>() {
+                            @Override
+                            protected void updateItem(Contact contact, boolean empty) {
+                                super.updateItem(contact, empty);
+                                if (contact == null || empty) {
+                                    setGraphic(null);
+                                } else {
+                                    setText(contact.getContactName() + " (ID: " + contact.getId() + ")");
+                                }
+                            }
+                        };
+                    }
+                };
         Callback<ListView<LocalDateTime>, ListCell<LocalDateTime>> timeDisplayingCellFactory =
                 new Callback<>() {
                     @Override
@@ -52,10 +87,63 @@ public class AddAppointmentController implements Initializable {
                         };
                     }
                 };
+        Callback<ListView<Customer>, ListCell<Customer>> customerNameAndIdDisplayingCellFactory =
+                new Callback<>() {
+                    @Override
+                    public ListCell<Customer> call(ListView<Customer> list) {
+                        return new ListCell<>() {
+                            @Override
+                            protected void updateItem(Customer customer, boolean empty) {
+                                super.updateItem(customer, empty);
+                                if (customer == null || empty) {
+                                    setGraphic(null);
+                                } else {
+                                    setText(customer.getName() + " (ID: " + customer.getId() + ")");
+                                }
+                            }
+                        };
+                    }
+                };
+        Callback<ListView<User>, ListCell<User>> userNameAndIdDisplayingCellFactory =
+                new Callback<>() {
+                    @Override
+                    public ListCell<User> call(ListView<User> list) {
+                        return new ListCell<>() {
+                            @Override
+                            protected void updateItem(User user, boolean empty) {
+                                super.updateItem(user, empty);
+                                if (user == null || empty) {
+                                    setGraphic(null);
+                                } else {
+                                    setText(user.getName() + " (ID: " + user.getId() + ")");
+                                }
+                            }
+                        };
+                    }
+                };
+
+        ObservableList<Contact> contacts = FXCollections.observableArrayList(DbManager.getAllContacts());
+        contactComboBox.setItems(contacts);
+        contactComboBox.setButtonCell(contactNameAndIdDisplayingCellFactory.call(null));
+        contactComboBox.setCellFactory(contactNameAndIdDisplayingCellFactory);
+
+        datePicker.setValue(LocalDate.now());
+        ObservableList<LocalDateTime> availableAppointmentTimes =
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue()));
+        startComboBox.setItems(availableAppointmentTimes);
         startComboBox.setButtonCell(timeDisplayingCellFactory.call(null));
         startComboBox.setCellFactory(timeDisplayingCellFactory);
         endComboBox.setButtonCell(timeDisplayingCellFactory.call(null));
         endComboBox.setCellFactory(timeDisplayingCellFactory);
+
+        ObservableList<Customer> customers = FXCollections.observableArrayList(DbManager.getAllCustomers());
+        customerIdComboBox.setItems(customers);
+        customerIdComboBox.setButtonCell(customerNameAndIdDisplayingCellFactory.call(null));
+        customerIdComboBox.setCellFactory(customerNameAndIdDisplayingCellFactory);
+        ObservableList<User> users = FXCollections.observableArrayList(DbManager.getAllUsers());
+        userIdComboBox.setItems(users);
+        userIdComboBox.setButtonCell(userNameAndIdDisplayingCellFactory.call(null));
+        userIdComboBox.setCellFactory(userNameAndIdDisplayingCellFactory);
     }
 
     @FXML
@@ -70,15 +158,33 @@ public class AddAppointmentController implements Initializable {
 
     @FXML
     private void onStartChanged(ActionEvent e) {
-        ObservableList<LocalDateTime> availableAppointmentEndTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(), startComboBox.getValue()));
-        endComboBox.disableProperty().set(false);
-        endComboBox.setItems(availableAppointmentEndTimes);
+        if(startComboBox.getValue() != null) {
+            ObservableList<LocalDateTime> availableAppointmentEndTimes =
+                    FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(), startComboBox.getValue()));
+            endComboBox.disableProperty().set(false);
+            endComboBox.setItems(availableAppointmentEndTimes);
+        }
     }
 
     @FXML
     private void onAddButtonClicked(MouseEvent e) {
-        System.out.println("DUMMY FUNCTION, DUMMY FUNCTION, AHAHAHAHAHA.");
+        String title = titleField.getText();
+        String description = descriptionField.getText();
+        String location = locationField.getText();
+        String type = typeField.getText();
+        LocalDateTime appointmentStart = startComboBox.getValue();
+        LocalDateTime appointmentEnd = endComboBox.getValue();
+        int customerId = customerIdComboBox.getValue().getId();
+        int userId = userIdComboBox.getValue().getId();
+        int contactId = contactComboBox.getValue().getId();
+
+        DbManager.addAppointment(title, description, location, type, appointmentStart, appointmentEnd, customerId, userId, contactId);
+        try {
+            uiManager.loadScene("appointments", (Stage) cancelButton.getScene().getWindow(), "1200x800");
+        } catch(IOException ex) {
+            System.out.println("IOException occurred in method onAddButtonClicked in AddAppointmentController:");
+            System.out.println(ex.getMessage());
+        }
     }
 
     @FXML

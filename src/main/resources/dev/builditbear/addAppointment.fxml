@@ -21,19 +21,19 @@
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Title" />
-            <TextField fx:id="title" />
+            <TextField fx:id="titleField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Description" />
-            <TextField fx:id="description" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="descriptionField" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Location" />
-            <TextField fx:id="location" />
+            <TextField fx:id="locationField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
@@ -49,7 +49,7 @@
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Label prefWidth="100.0" text="Type" />
-            <TextField fx:id="type" />
+            <TextField fx:id="typeField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
@@ -85,7 +85,7 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </HBox.margin>
             </ComboBox>
-            <ComboBox fx:id="appointmentIdComboBox" prefWidth="200.0" promptText="Appointment ID">
+            <ComboBox fx:id="userIdComboBox" prefWidth="200.0" promptText="User ID">
                <HBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </HBox.margin>

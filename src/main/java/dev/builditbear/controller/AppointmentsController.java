@@ -97,7 +97,7 @@ public class AppointmentsController implements Initializable {
             return new ReadOnlyObjectWrapper<>(ldt.format(TimeConversion.standard));
         });
         end.setCellValueFactory(appointment -> {
-            LocalDateTime ldt = appointment.getValue().getStart();
+            LocalDateTime ldt = appointment.getValue().getEnd();
             return new ReadOnlyObjectWrapper<>(ldt.format(TimeConversion.standard));
         });
         customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));

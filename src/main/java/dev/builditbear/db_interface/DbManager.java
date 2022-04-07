@@ -35,14 +35,14 @@ public final class DbManager {
      * database or input was improperly formatted.
      */
     public static int addAppointment(String title, String description, String location, String type,
-                                     LocalDateTime start, LocalDateTime end, int customerId, int contactId) {
+                                     LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
         Connection connection = ConnectionManager.getConnection();
         try {
             PreparedStatement addRecord = connection.prepareStatement("INSERT INTO appointments VALUES " +
                     "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
-            User user = ConnectionManager.getCurrentUser();
+            User appointmentCreator = ConnectionManager.getCurrentUser();
             Object[] parameters = {title, description, location, type, Timestamp.valueOf(start), Timestamp.valueOf(end),
-                    user.getName(), user.getName(), customerId, user.getId(), contactId};
+                    appointmentCreator.getName(), appointmentCreator.getName(), customerId, userId, contactId};
             for(int i = 1; i <= parameters.length; i++) {
                 addRecord.setObject(i, parameters[i - 1]);
             }
@@ -95,12 +95,31 @@ public final class DbManager {
     public static Contact getContact(int contactId) {
         Object[] parameters = {contactId};
         try(ResultSet result = processQuery("SELECT * FROM contacts WHERE Contact_ID = ?", parameters)) {
-            return createContact(result);
+            if(result.next()) {
+                return createContact(result);
+            } else {
+                return null;
+            }
         } catch(SQLException ex) {
             System.out.println("SQLException encountered in method getContact:");
             System.out.println(ex.getMessage());
             return null;
         }
+    }
+
+    public static ArrayList<Contact> getAllContacts() {
+        ArrayList<Contact> contacts = new ArrayList<>();
+        try(ResultSet result = processQuery("SELECT * FROM contacts")) {
+            boolean moreRows = result.next();
+            while(moreRows) {
+                contacts.add(createContact(result));
+                moreRows = result.next();
+            }
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getAllContacts.");
+            System.out.println(ex.getMessage());
+        }
+        return contacts;
     }
 
     /**
@@ -156,10 +175,10 @@ public final class DbManager {
     public static ArrayList<Customer> getAllCustomers() {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement selectQuery;
+        ArrayList<Customer> customers = new ArrayList<>();
         try {
             selectQuery = connection.prepareStatement("SELECT * FROM customers");
             ResultSet queryResult = selectQuery.executeQuery();
-            ArrayList<Customer> customers = new ArrayList<>();
             boolean moreRows = queryResult.next();
             while(moreRows) {
                 Customer c = createCustomer(queryResult);
@@ -170,7 +189,7 @@ public final class DbManager {
         } catch(SQLException ex) {
             System.out.println("The following exception was encountered in method getAllCustomers:");
             System.out.println(ex.getMessage());
-            return null;
+            return customers;
         }
     }
 
@@ -180,8 +199,8 @@ public final class DbManager {
      * if a communication error is encountered.
      */
     public static ArrayList<Appointment> getAllAppointments() {
+        ArrayList<Appointment> appointments = new ArrayList<>();
         try(ResultSet results = processQuery("SELECT * FROM appointments")) {
-            ArrayList<Appointment> appointments = new ArrayList<>();
             boolean moreRows = results.next();
             while(moreRows) {
                 Appointment a = createAppointment(results);
@@ -192,14 +211,14 @@ public final class DbManager {
         } catch(SQLException ex) {
             System.out.println("SQLException encountered in method getAllAppointments:");
             System.out.println(ex.getMessage());
-            return null;
+            return appointments;
         }
     }
 
     public static ArrayList<FirstLevelDivision> getAllFirstLevelDivisions() {
+        ArrayList<FirstLevelDivision> firstLevelDivisions = new ArrayList<>();
         try {
             ResultSet queryResult = processQuery("SELECT * FROM first_level_divisions");
-            ArrayList<FirstLevelDivision> firstLevelDivisions = new ArrayList<>();
             boolean moreRows = queryResult.next();
             while(moreRows) {
                 FirstLevelDivision fld = createFirstLevelDivision(queryResult);
@@ -210,7 +229,7 @@ public final class DbManager {
         } catch(SQLException ex) {
             System.out.println("SQLException occurred in method getAllFirstLevelDivisions:");
             System.out.println(ex.getMessage());
-            return null;
+            return firstLevelDivisions;
         }
 
     }
@@ -234,6 +253,61 @@ public final class DbManager {
             }
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method getFirstLevelDivision:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    public static User getUser(String user) {
+        Object[] parameters = {user};
+        try(ResultSet result = processQuery("SELECT * FROM users WHERE User_Name = ?", parameters)){
+            if(result.next()) {
+                return createUser(result);
+            } else {
+                return null;
+            }
+        } catch(SQLException ex) {
+            System.out.println("SQLException occurred in method getUser:");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    public static ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        try(ResultSet result = processQuery("SELECT * FROM users")) {
+
+            boolean moreRows = result.next();
+            while(moreRows) {
+                users.add(createUser(result));
+                moreRows = result.next();
+            }
+            return users;
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getAllUsers:");
+            System.out.println(ex.getMessage());
+            return users;
+        }
+    }
+
+
+
+    private static User createUser(ResultSet queryResult){
+        try {
+            int id = queryResult.getInt(1);
+            String name = queryResult.getString(2);
+            String password = queryResult.getString(3);
+            LocalDateTime createDate = queryResult.getTimestamp(4).toLocalDateTime();
+            String createdBy = queryResult.getString(5);
+            LocalDateTime lastupdate = queryResult.getTimestamp(6).toLocalDateTime();
+            String lastUpdatedBy = queryResult.getString(7);
+            return new User(id, name, password, createDate, createdBy, lastupdate, lastUpdatedBy);
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method createUser:");
+            System.out.println(ex.getMessage());
+            return null;
+        } catch(NullPointerException ex) {
+            System.out.println("NullPointerException encountered in method createUser");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -263,7 +337,6 @@ public final class DbManager {
             int customerId = results.getInt(12);
             int userId = results.getInt(13);
             int contactId = results.getInt(14);
-
             return new Appointment(id, title, description, location, type, start, end, createDate, createdBy,
                     lastUpdate, lastUpdatedBy, customerId, userId, contactId);
         } catch(SQLException ex) {
@@ -284,13 +357,20 @@ public final class DbManager {
      * @throws SQLException Thrown in the event of an error while interacting with the SQL ResultSet.
      */
     private static Contact createContact(ResultSet queryResult) throws SQLException{
-        if(queryResult.next()) {
+        try {
             int id = queryResult.getInt(1);
             String contactName = queryResult.getString(2);
             String email = queryResult.getString(3);
             return new Contact(id, contactName, email);
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method createContact:");
+            System.out.println(ex.getMessage());
+            return null;
+        } catch(NullPointerException ex) {
+            System.out.println("NullPointerException encountered in method createContact:");
+            System.out.println(ex.getMessage());
+            return null;
         }
-        return null;
     }
 
     /**
@@ -563,12 +643,6 @@ public final class DbManager {
                 && timeWithinBusinessHours(endTime, businessOpen, businessClose)) {
             appointmentEndTimes.add(endTime);
             endTime = endTime.plusMinutes(timeSlotLengthInMinutes);
-        }
-        for(int i = 30;
-            !endTimeOverlaps(getBookedAppointments(), appointmentStart, appointmentStart.plusMinutes(i))
-                    && timeWithinBusinessHours(appointmentStart.plusMinutes(i), businessOpen, businessClose);
-            i += timeSlotLengthInMinutes) {
-            appointmentEndTimes.add(appointmentStart.plusMinutes(i));
         }
         return appointmentEndTimes;
     }
