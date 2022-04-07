@@ -632,11 +632,11 @@ public final class DbManager {
     }
 
     /**
-     * Generates a list of available start times on a given date for scheduling appointments.
+     * Generates a list of available start times on a given date for scheduling appointments for a particular User.
      * @param date The date we are retrieving available appointment times for.
      * @return An ArrayList of available times for scheduling, in order from soonest to latest.
      */
-    public static ArrayList<LocalDateTime> getAvailableStartTimes(LocalDate date) {
+    public static ArrayList<LocalDateTime> getAvailableStartTimes(LocalDate date, User user) {
         ArrayList<LocalDateTime> appointmentStartTimes = new ArrayList<>();
         LocalDateTime businessOpen = generateBusinessOpen(date);
         LocalDateTime businessClose = generateBusinessClose(date);
@@ -644,18 +644,18 @@ public final class DbManager {
         // Generate appointment start times during business hours at 30 minutes intervals. As defined here, 30 minutes is
         // the shortest appointment available.
         LocalDateTime startTime = businessOpen;
-        while(!startTimeOverlaps(getBookedAppointments(), startTime) && startTime.isBefore(businessClose)) {
+        while(startTime.isBefore(businessClose)) {
             appointmentStartTimes.add(startTime);
             startTime = startTime.plusMinutes(timeSlotLengthInMinutes);
         }
         // Lambda usage 5 -- Filter out any overlapping appointment start times.
         appointmentStartTimes.removeIf(appointmentStart ->
-                startTimeOverlaps(getBookedAppointments(), appointmentStart));
+                startTimeOverlaps(getUsersBookedAppointments(user), appointmentStart));
         return appointmentStartTimes;
     }
 
     /**
-     * Generates a list of available appointment end times on a given date for a given appointment start time. Note that
+     * Generates a list of available appointment end times on a given date for a given appointment start time and User. Note that
      * it is necessary to first know the appointment start time because the validity of an end time depends on whether
      * the appointment starts before or after any already booked appointment.
      * @param date The date for which we are retrieving end appointment times for.
@@ -663,13 +663,13 @@ public final class DbManager {
      * @return A list of available (that is, within business hours and not overlapping with any other existing
      * appointments) end times.
      */
-    public static ArrayList<LocalDateTime> getAvailableEndTimes(LocalDate date, LocalDateTime appointmentStart) {
+    public static ArrayList<LocalDateTime> getAvailableEndTimes(LocalDate date, LocalDateTime appointmentStart, User user) {
         ArrayList<LocalDateTime> appointmentEndTimes = new ArrayList<>();
         LocalDateTime businessOpen = generateBusinessOpen(date);
         LocalDateTime businessClose = generateBusinessClose(date);
         int timeSlotLengthInMinutes = 30;
         LocalDateTime endTime = appointmentStart.plusMinutes(timeSlotLengthInMinutes);
-        while(!endTimeOverlaps(getBookedAppointments(), appointmentStart, endTime)
+        while(!endTimeOverlaps(getUsersBookedAppointments(user), appointmentStart, endTime)
                 && timeWithinBusinessHours(endTime, businessOpen, businessClose)) {
             appointmentEndTimes.add(endTime);
             endTime = endTime.plusMinutes(timeSlotLengthInMinutes);
@@ -683,7 +683,7 @@ public final class DbManager {
      * @param date The date for which we are defining an opening time.
      * @return A LocalDateTime object in the local timezone defining the time the business opens on the given date.
      */
-    private static LocalDateTime generateBusinessOpen(LocalDate date) {
+    public static LocalDateTime generateBusinessOpen(LocalDate date) {
         return TimeConversion.toLocalTimeZone(
                 LocalDateTime.of(date, AppointmentsController.getBusinessOpen()),
                 AppointmentsController.getBusinessTimezone());
@@ -695,7 +695,7 @@ public final class DbManager {
      * @param date The date for which we are defining an closing time.
      * @return A LocalDateTime object in the local timezone defining the time the business closes on the given date.
      */
-    private static LocalDateTime generateBusinessClose(LocalDate date) {
+    public static LocalDateTime generateBusinessClose(LocalDate date) {
         return TimeConversion.toLocalTimeZone(
                 LocalDateTime.of(date, AppointmentsController.getBusinessClose()),
                 AppointmentsController.getBusinessTimezone());
@@ -703,24 +703,29 @@ public final class DbManager {
 
     private static boolean startTimeOverlaps(ArrayList<Appointment> bookedAppointments,
                                              LocalDateTime appointmentStart) {
-        boolean appointmentOverlap = false;
         for(Appointment bookedAppointment : bookedAppointments) {
-            appointmentOverlap = (appointmentStart.isEqual(bookedAppointment.getStart()) ||
-                                 appointmentStart.isAfter(bookedAppointment.getStart())) &&
-                                 appointmentStart.isBefore(bookedAppointment.getEnd());
+            if(appointmentStart.isEqual(bookedAppointment.getStart()) ||
+                    (appointmentStart.isAfter(bookedAppointment.getStart()) && appointmentStart.isBefore(bookedAppointment.getEnd()))) {
+                return true;
+            }
         }
-        return appointmentOverlap;
+        return false;
     }
 
     private static boolean endTimeOverlaps(ArrayList<Appointment> bookedAppointments,
                                            LocalDateTime appointmentStart, LocalDateTime appointmentEnd) {
-        boolean appointmentOverlap = false;
         for(Appointment bookedAppointment : bookedAppointments) {
-            if(appointmentStart.isBefore(bookedAppointment.getStart())) {
-                appointmentOverlap = appointmentEnd.isAfter(bookedAppointment.getStart());
+            if(appointmentStart.isBefore(bookedAppointment.getStart()) && appointmentEnd.isAfter(bookedAppointment.getStart())) {
+                return true;
             }
         }
-        return appointmentOverlap;
+        return false;
+    }
+
+    public static boolean customerBeingDoubleBooked(LocalDateTime appointmentStart, LocalDateTime appointmentEnd, Customer customer) {
+        ArrayList<Appointment> bookedAppointments = getCustomersBookedAppointments(customer);
+        return startTimeOverlaps(bookedAppointments, appointmentStart) ||
+                endTimeOverlaps(bookedAppointments, appointmentStart, appointmentEnd);
     }
 
     /**
@@ -731,7 +736,7 @@ public final class DbManager {
      * @param businessClose The business' close time.
      * @return True if the appointment is within business hours, and False otherwise.
      */
-    private static boolean appointmentWithinBusinessHours(LocalDateTime appointmentStart, LocalDateTime appointmentEnd,
+    public static boolean appointmentWithinBusinessHours(LocalDateTime appointmentStart, LocalDateTime appointmentEnd,
                                                           LocalDateTime businessOpen, LocalDateTime businessClose) {
         return timeWithinBusinessHours(appointmentStart, businessOpen, businessClose) &&
                 timeWithinBusinessHours(appointmentEnd, businessOpen, businessClose);
@@ -751,13 +756,15 @@ public final class DbManager {
 
     /**
      * Generates an ArrayList of Appointment objects representing the start and end times for all appointments currently
-     * in the database. In the future, this method will accept a date by which to filter the records search, as
-     * this method's runtime will scale linearly with the amount of appointments (including past ones) in the database.
+     * in the database for a particular User. In the future, this method will accept a date by which to filter the
+     * records search, as this method's runtime will scale linearly with the amount of appointments
+     * (including past ones) in the database.
      * @return An ArrayList representing the start times and dates for all currently scheduled appointments.
      */
-    public static ArrayList<Appointment> getBookedAppointments() {
+    public static ArrayList<Appointment> getUsersBookedAppointments(User user) {
         ArrayList<Appointment> bookedAppointments = new ArrayList<>();
-        try(ResultSet result = processQuery("SELECT * FROM appointments")) {
+        Object[] parameters = {user.getId()};
+        try(ResultSet result = processQuery("SELECT * FROM appointments WHERE User_ID = ?", parameters)) {
             boolean moreRows = result.next();
             while(moreRows) {
                 bookedAppointments.add(createAppointment(result));
@@ -765,7 +772,24 @@ public final class DbManager {
             }
             return bookedAppointments;
         } catch(SQLException ex) {
-            System.out.println("SQLException encountered in method getAllAppointments:");
+            System.out.println("SQLException encountered in method getUsersBookedAppointments:");
+            System.out.println(ex.getMessage());
+            return bookedAppointments;
+        }
+    }
+
+    public static ArrayList<Appointment> getCustomersBookedAppointments(Customer customer) {
+        ArrayList<Appointment> bookedAppointments = new ArrayList<>();
+        Object[] parameters = {customer.getId()};
+        try(ResultSet result = processQuery("SELECT * FROM appointments WHERE Customer_ID = ?", parameters)) {
+            boolean moreRows = result.next();
+            while(moreRows) {
+                bookedAppointments.add(createAppointment(result));
+                moreRows = result.next();
+            }
+            return bookedAppointments;
+        } catch(SQLException ex) {
+            System.out.println("SQLException encountered in method getCustomersBookedAppointments:");
             System.out.println(ex.getMessage());
             return bookedAppointments;
         }

@@ -157,7 +157,7 @@ public class UpdateAppointmentController implements Initializable {
         });
 
         ObservableList<LocalDateTime> availableAppointmentStartTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue()));
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue(), userIdComboBox.getValue()));
         startComboBox.setItems(availableAppointmentStartTimes);
         startComboBox.setButtonCell(timeDisplayingCellFactory.call(null));
         startComboBox.setCellFactory(timeDisplayingCellFactory);
@@ -177,7 +177,8 @@ public class UpdateAppointmentController implements Initializable {
         });
 
         ObservableList<LocalDateTime> availableAppointmentEndTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(), startComboBox.getValue()));
+                FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(),
+                        startComboBox.getValue(), userIdComboBox.getValue()));
         endComboBox.setItems(availableAppointmentEndTimes);
         endComboBox.setButtonCell(timeDisplayingCellFactory.call(null));
         endComboBox.setCellFactory(timeDisplayingCellFactory);
@@ -241,7 +242,7 @@ public class UpdateAppointmentController implements Initializable {
         endComboBox.disableProperty().set(true);
         endComboBox.setItems(null);
         ObservableList<LocalDateTime> availableAppointmentTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(newlySelectedDate));
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(newlySelectedDate, userIdComboBox.getValue()));
         startComboBox.setItems(availableAppointmentTimes);
     }
 
@@ -249,7 +250,8 @@ public class UpdateAppointmentController implements Initializable {
     private void onStartChanged(ActionEvent e) {
         if(startComboBox.getValue() != null) {
             ObservableList<LocalDateTime> availableAppointmentEndTimes =
-                    FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(), startComboBox.getValue()));
+                    FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(),
+                            startComboBox.getValue(), userIdComboBox.getValue()));
             endComboBox.disableProperty().set(false);
             endComboBox.setItems(availableAppointmentEndTimes);
         }
@@ -275,6 +277,14 @@ public class UpdateAppointmentController implements Initializable {
             System.out.println("IOException occurred in method onAddButtonClicked in UpdateAppointmentController:");
             System.out.println(ex.getMessage());
         }
+    }
+
+    @FXML
+    private void onUserChanged(MouseEvent e) {
+        User newlySelectedUser = userIdComboBox.getValue();
+        ObservableList<LocalDateTime> availableAppointmentStartTimes =
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue(), newlySelectedUser));
+        startComboBox.setItems(availableAppointmentStartTimes);
     }
 
     @FXML

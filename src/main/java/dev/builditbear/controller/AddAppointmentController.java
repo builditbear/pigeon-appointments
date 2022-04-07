@@ -1,9 +1,11 @@
 package dev.builditbear.controller;
 
+import dev.builditbear.db_interface.ConnectionManager;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Contact;
 import dev.builditbear.model.Customer;
 import dev.builditbear.model.User;
+import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
 import javafx.collections.FXCollections;
@@ -15,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -121,6 +124,25 @@ public class AddAppointmentController implements Initializable {
                         };
                     }
                 };
+        ObservableList<User> users = FXCollections.observableArrayList(DbManager.getAllUsers());
+        userIdComboBox.setItems(users);
+        userIdComboBox.setValue(ConnectionManager.getCurrentUser());
+        userIdComboBox.setButtonCell(userNameAndIdDisplayingCellFactory.call(null));
+        userIdComboBox.setCellFactory(userNameAndIdDisplayingCellFactory);
+        userIdComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(User user) {
+                if (user == null) {
+                    return "";
+                } else {
+                    return user.getName() + " (ID: " + user.getId() + ")";
+                }
+            }
+            @Override
+            public User fromString(String s) {
+                return null;
+            }
+        });
 
         ObservableList<Contact> contacts = FXCollections.observableArrayList(DbManager.getAllContacts());
         contactComboBox.setItems(contacts);
@@ -129,7 +151,7 @@ public class AddAppointmentController implements Initializable {
 
         datePicker.setValue(LocalDate.now());
         ObservableList<LocalDateTime> availableAppointmentTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue()));
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue(), userIdComboBox.getValue()));
         startComboBox.setItems(availableAppointmentTimes);
         startComboBox.setButtonCell(timeDisplayingCellFactory.call(null));
         startComboBox.setCellFactory(timeDisplayingCellFactory);
@@ -140,10 +162,6 @@ public class AddAppointmentController implements Initializable {
         customerIdComboBox.setItems(customers);
         customerIdComboBox.setButtonCell(customerNameAndIdDisplayingCellFactory.call(null));
         customerIdComboBox.setCellFactory(customerNameAndIdDisplayingCellFactory);
-        ObservableList<User> users = FXCollections.observableArrayList(DbManager.getAllUsers());
-        userIdComboBox.setItems(users);
-        userIdComboBox.setButtonCell(userNameAndIdDisplayingCellFactory.call(null));
-        userIdComboBox.setCellFactory(userNameAndIdDisplayingCellFactory);
     }
 
     @FXML
@@ -152,7 +170,7 @@ public class AddAppointmentController implements Initializable {
         endComboBox.disableProperty().set(true);
         endComboBox.setItems(null);
         ObservableList<LocalDateTime> availableAppointmentTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(newlySelectedDate));
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(newlySelectedDate, userIdComboBox.getValue()));
         startComboBox.setItems(availableAppointmentTimes);
     }
 
@@ -160,10 +178,19 @@ public class AddAppointmentController implements Initializable {
     private void onStartChanged(ActionEvent e) {
         if(startComboBox.getValue() != null) {
             ObservableList<LocalDateTime> availableAppointmentEndTimes =
-                    FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(), startComboBox.getValue()));
+                    FXCollections.observableArrayList(DbManager.getAvailableEndTimes(datePicker.getValue(),
+                            startComboBox.getValue(), userIdComboBox.getValue()));
             endComboBox.disableProperty().set(false);
             endComboBox.setItems(availableAppointmentEndTimes);
         }
+    }
+
+    @FXML
+    private void onUserChanged(ActionEvent e) {
+        User newlySelectedUser = userIdComboBox.getValue();
+        ObservableList<LocalDateTime> availableAppointmentStartTimes =
+                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue(), newlySelectedUser));
+        startComboBox.setItems(availableAppointmentStartTimes);
     }
 
     @FXML
@@ -178,12 +205,25 @@ public class AddAppointmentController implements Initializable {
         int userId = userIdComboBox.getValue().getId();
         int contactId = contactComboBox.getValue().getId();
 
-        DbManager.addAppointment(title, description, location, type, appointmentStart, appointmentEnd, customerId, userId, contactId);
-        try {
-            uiManager.loadScene("appointments", (Stage) addButton.getScene().getWindow(), "1200x800");
-        } catch(IOException ex) {
-            System.out.println("IOException occurred in method onAddButtonClicked in AddAppointmentController:");
-            System.out.println(ex.getMessage());
+        /* The user choices for scheduling an appointment will automatically be filtered such that the selected User
+        cannot be double booked and, additionally, should ensure that an appointment cannot be schedule outside of
+        business hours. However, per the project requirements, these checks will ensure that the appointment
+        is scheduled for a time within business hours, and that the customer selected is not scheduled in two places
+        at the same time. */
+        LocalDateTime businessOpen = DbManager.generateBusinessOpen(appointmentStart.toLocalDate());
+        LocalDateTime businessClose = DbManager.generateBusinessClose(appointmentStart.toLocalDate());
+        if(!DbManager.appointmentWithinBusinessHours(appointmentStart, appointmentEnd, businessOpen, businessClose)){
+            Alerts.appointmentTimeOutsideBusinessHours();
+        } else if(DbManager.customerBeingDoubleBooked(appointmentStart, appointmentEnd, DbManager.getCustomer(customerId))) {
+            Alerts.appointmentOverlapsWithExistingAppointment();
+        } else {
+            DbManager.addAppointment(title, description, location, type, appointmentStart, appointmentEnd, customerId, userId, contactId);
+            try {
+                uiManager.loadScene("appointments", (Stage) addButton.getScene().getWindow(), "1200x800");
+            } catch(IOException ex) {
+                System.out.println("IOException occurred in method onAddButtonClicked in AddAppointmentController:");
+                System.out.println(ex.getMessage());
+            }
         }
     }
 

@@ -36,12 +36,30 @@ public final class Alerts {
     public static void appointmentDeletedAlert(Appointment appointment) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(App.getBundle().getString("appointment_deleted_title"));
-        alert.setContentText(App.getBundle().getString("appointment_deleted_text") + "\n" + appointment.getId());
+        alert.setContentText(App.getBundle().getString("appointment_deleted_text") + " " +
+                appointment.getId() + ", " + appointment.getType() );
+        alert.showAndWait();
     }
 
     public static void appointmentDeleteFailedAlert(Appointment appointment) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(App.getBundle().getString("appointment_delete_failed_title"));
-        alert.setContentText(App.getBundle().getString("appointment_delete_failed_text") + "\n" + appointment.getId());
+        alert.setContentText(App.getBundle().getString("appointment_delete_failed_text") + " " +
+                appointment.getId() + ", " + appointment.getType());
+        alert.showAndWait();
+    }
+
+    public static void appointmentTimeOutsideBusinessHours() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(App.getBundle().getString("appointment_outside_business_title"));
+        alert.setContentText(App.getBundle().getString("appointment_outside_business_text"));
+        alert.showAndWait();
+    }
+
+    public static void appointmentOverlapsWithExistingAppointment() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(App.getBundle().getString("appointment_overlap_title"));
+        alert.setContentText(App.getBundle().getString("appointment_overlap_text"));
+        alert.showAndWait();
     }
 }
