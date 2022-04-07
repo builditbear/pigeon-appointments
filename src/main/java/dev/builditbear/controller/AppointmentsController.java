@@ -30,6 +30,7 @@ public class AppointmentsController implements Initializable {
     private static final LocalTime businessOpen = LocalTime.of(8, 0);
     private static final LocalTime businessClose = LocalTime.of(22, 0);
     private static final ZoneId businessTimezone = ZoneId.of("EST", ZoneId.SHORT_IDS);
+    private static Appointment selectedAppointment = null;
 
     public static LocalTime getBusinessOpen() {
         return businessOpen;
@@ -40,6 +41,10 @@ public class AppointmentsController implements Initializable {
 
     public static ZoneId getBusinessTimezone() {
         return businessTimezone;
+    }
+
+    public static Appointment getSelectedAppointment() {
+        return selectedAppointment;
     }
 
     @FXML
@@ -68,6 +73,8 @@ public class AppointmentsController implements Initializable {
     private Button viewCustomers;
     @FXML
     private Button addButton;
+    @FXML
+    private Button updateButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -120,6 +127,19 @@ public class AppointmentsController implements Initializable {
         } catch(IOException ex) {
             System.out.println("An IO exception occurred in event handler onAddClicked. " +
                     "Make sure that the view you're attempting to load exists.");
+        }
+    }
+
+    @FXML
+    private void onUpdateClicked(MouseEvent e) {
+        selectedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
+        if(selectedAppointment != null) {
+            try {
+                uiManager.loadScene("updateAppointment", (Stage) updateButton.getScene().getWindow(), "480x480");
+            } catch(IOException ex) {
+                System.out.println("An IOException occurred in event handler onUpdateClicked in AppointmentController:");
+                System.out.println(ex.getMessage());
+            }
         }
     }
 

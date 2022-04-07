@@ -83,7 +83,7 @@
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <buttons>
                   <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#onAddClicked" text="Add" />
-                <Button fx:id="updateButton" mnemonicParsing="false" text="Update" />
+                <Button fx:id="updateButton" mnemonicParsing="false" onMouseClicked="#onUpdateClicked" text="Update" />
                   <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#onDeleteClicked" text="Delete" />
               </buttons>
                <padding>

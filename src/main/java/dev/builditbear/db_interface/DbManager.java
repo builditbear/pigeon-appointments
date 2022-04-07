@@ -273,6 +273,21 @@ public final class DbManager {
         }
     }
 
+    public static User getUser(int id) {
+        Object[] parameters = {id};
+        try(ResultSet result = processQuery("SELECT * FROM users WHERE User_ID = ?", parameters)) {
+            if(result.next()) {
+                return createUser(result);
+            } else {
+                return null;
+            }
+        } catch(SQLException ex) {
+            System.out.println("SQLException occurred in method getUser: ");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         try(ResultSet result = processQuery("SELECT * FROM users")) {
@@ -558,6 +573,21 @@ public final class DbManager {
             return updateRecord.executeUpdate();
         } catch(SQLException ex) {
             System.out.println("An SQLException occurred in method updateCustomer:");
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
+
+    public static int updateAppointment(int appointmentId, String title, String description, String location, String type,
+                                        LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
+        Object[] parameters = {title, description, location, type, Timestamp.valueOf(start), Timestamp.valueOf(end),
+                ConnectionManager.getCurrentUser().getName(), customerId, userId, contactId, appointmentId};
+        try{
+            return processUpdate("UPDATE appointments SET Title = ?, Description = ?, Location = ?, " +
+                    "Type = ?, Start = ?, End = ?, Last_Update = NOW(), Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, " +
+                    "Contact_ID = ? WHERE Appointment_ID = ?", parameters);
+        } catch(SQLException ex) {
+            System.out.println("SQLException occurred in method updateAppointment:");
             System.out.println(ex.getMessage());
             return 0;
         }
