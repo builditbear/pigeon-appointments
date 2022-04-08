@@ -84,7 +84,7 @@ public class AddAppointmentController implements Initializable {
                                 if (dateAndTime == null || empty) {
                                     setGraphic(null);
                                 } else {
-                                    setText(dateAndTime.format(TimeConversion.standard));
+                                    setText(dateAndTime.format(TimeConversion.standardDateAndTime));
                                 }
                             }
                         };

@@ -5,6 +5,8 @@ import dev.builditbear.model.Appointment;
 import dev.builditbear.model.Customer;
 import javafx.scene.control.Alert;
 
+import static dev.builditbear.utility.TimeConversion.standardDateAndTime;
+
 public final class Alerts {
 
     private Alerts(){
@@ -60,6 +62,21 @@ public final class Alerts {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(App.getBundle().getString("appointment_overlap_title"));
         alert.setContentText(App.getBundle().getString("appointment_overlap_text"));
+        alert.showAndWait();
+    }
+
+    public static void appointmentImminent(Appointment appointment) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(App.getBundle().getString("appointment_imminent_title"));
+        alert.setContentText(App.getBundle().getString("appointment_imminent_text") + "\nID " +
+                appointment.getId() + ", " + appointment.getStart().format(standardDateAndTime));
+        alert.showAndWait();
+    }
+
+    public static void noAppointmentsImminent() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(App.getBundle().getString("no_imminent_appointments_title"));
+        alert.setContentText(App.getBundle().getString("no_imminent_appointments_text"));
         alert.showAndWait();
     }
 }

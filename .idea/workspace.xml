@@ -5,15 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49164964-80c4-4c68-b53a-58b56cffed0f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/ReportsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/reports.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddAppointmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddAppointmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateAppointmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateAppointmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/Alerts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/Alerts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addAppointment.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/addAppointment.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/appointments.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/appointments.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/updateAppointment.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/updateAppointment.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dev/builditbear/controller/LoginController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/builditbear/controller/LoginController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dev/builditbear/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/builditbear/controller/LoginController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dev/builditbear/utility/TimeConversion.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/builditbear/utility/TimeConversion.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,11 +102,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateCustomerController.java</url>
           <line>84</line>
           <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java</url>
-          <line>148</line>
-          <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddAppointmentController.java</url>

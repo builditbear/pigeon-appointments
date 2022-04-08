@@ -13,8 +13,8 @@ public final class TimeConversion {
     private TimeConversion() {
         throw new RuntimeException("Instantiation of TimeConversion is not allowed.");
     }
-
-    public static final DateTimeFormatter standard = DateTimeFormatter.ofPattern("LLL dd, yyyy @ hh:mm a");
+    public static final DateTimeFormatter standardDate = DateTimeFormatter.ofPattern("LLL dd, yyyy");
+    public static final DateTimeFormatter standardDateAndTime = DateTimeFormatter.ofPattern("LLL dd, yyyy @ hh:mm a");
     public static final DateTimeFormatter showTimezone= DateTimeFormatter.ofPattern("hh:mm:ss a z");
 
     /**
@@ -23,7 +23,7 @@ public final class TimeConversion {
      * @return A String describing the time represented by ldt in the format "hh:mm:ss a", where "a" is AM or PM.
      */
     public static String printUTCTime(LocalDateTime ldt) {
-        return ldt.atZone(ZoneOffset.ofHours(-8)).format(standard.withZone(ZoneOffset.UTC));
+        return ldt.atZone(ZoneOffset.ofHours(-8)).format(standardDateAndTime.withZone(ZoneOffset.UTC));
     }
 
     /**
@@ -56,5 +56,35 @@ public final class TimeConversion {
         ZonedDateTime zonedForeignTime = foreignTime.atZone(zoneId);
         ZonedDateTime zonedLocalTime = zonedForeignTime.withZoneSameInstant(TimeZone.getDefault().toZoneId());
         return zonedLocalTime.toLocalDateTime();
+    }
+
+    public static LocalDate getMonthStartDate() {
+        LocalDate date = LocalDate.now();
+        while(date.getDayOfMonth() != 1) {
+            date = date.minusDays(1);
+        }
+        return date;
+    }
+
+    public static LocalDate getMonthStartDate(LocalDate date) {
+        while(date.getDayOfMonth() != 1) {
+            date = date.minusDays(1);
+        }
+        return date;
+    }
+
+    public static LocalDate getWeekStartDate() {
+        LocalDate date = LocalDate.now();
+        while(date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            date = date.minusDays(1);
+        }
+        return date;
+    }
+
+    public static LocalDate getWeekStartDate(LocalDate date) {
+        while(date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            date = date.minusDays(1);
+        }
+        return date;
     }
 }

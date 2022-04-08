@@ -8,10 +8,15 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import dev.builditbear.App;
 import dev.builditbear.db_interface.ConnectionManager;
+import dev.builditbear.db_interface.DbManager;
+import dev.builditbear.model.Appointment;
+import dev.builditbear.model.User;
+import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
 import javafx.animation.AnimationTimer;
@@ -106,13 +111,32 @@ public class LoginController implements Initializable{
         boolean authenticationSuccessful = ConnectionManager.authenticateLogin(username, password);
 
         if(authenticationSuccessful) {
+            Appointment upcomingAppointment = appointmentWithinFifteenMinutes(ConnectionManager.getCurrentUser());
+            if(upcomingAppointment != null) {
+                Alerts.appointmentImminent(upcomingAppointment);
+            } else {
+                Alerts.noAppointmentsImminent();
+            }
             try{
-                uiManager.loadScene("customers",(Stage) loginButton.getScene().getWindow(),"1200x800");
+                uiManager.loadScene("appointments",(Stage) loginButton.getScene().getWindow(),"1200x800");
             } catch(IOException ex) {
                 System.out.println("An IO exception occurred in method onLoginClicked. " +
                                    "Make sure that the view you're attempting to load exists.");
+                System.out.println(ex.getMessage());
             }
         }
+
+    }
+
+    private Appointment appointmentWithinFifteenMinutes(User user) {
+        ArrayList<Appointment> appointments = DbManager.getUsersBookedAppointments(user);
+        for(Appointment appointment : appointments) {
+            LocalDateTime start = appointment.getStart();
+            if(start.isAfter(LocalDateTime.now()) && start.isBefore(LocalDateTime.now().plusMinutes(15))) {
+                return appointment;
+            }
+        }
+        return null;
     }
 
 

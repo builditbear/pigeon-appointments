@@ -82,7 +82,7 @@ public class UpdateAppointmentController implements Initializable {
                                 if (dateAndTime == null || empty) {
                                     setGraphic(null);
                                 } else {
-                                    setText(dateAndTime.format(TimeConversion.standard));
+                                    setText(dateAndTime.format(TimeConversion.standardDateAndTime));
                                 }
                             }
                         };
@@ -167,7 +167,7 @@ public class UpdateAppointmentController implements Initializable {
                 if (dateAndTime == null) {
                     return "";
                 } else {
-                    return dateAndTime.format(TimeConversion.standard);
+                    return dateAndTime.format(TimeConversion.standardDateAndTime);
                 }
             }
             @Override
@@ -188,7 +188,7 @@ public class UpdateAppointmentController implements Initializable {
                 if (dateAndTime == null) {
                     return "";
                 } else {
-                    return dateAndTime.format(TimeConversion.standard);
+                    return dateAndTime.format(TimeConversion.standardDateAndTime);
                 }
             }
             @Override

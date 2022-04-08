@@ -22,30 +22,45 @@
                   <Image url="@logo.png" />
                </image>
             </ImageView>
-            <Label prefHeight="74.0" prefWidth="143.0" text="Pigeon&#10;Appointments" wrapText="true">
+            <Label prefHeight="74.0" prefWidth="150.0" text="Pigeon&#10;Appointments" wrapText="true">
                <font>
                   <Font name="Hiragino Sans W6" size="17.0" />
                </font>
             </Label>
-            <Label alignment="TOP_CENTER" text="Week of &#10;February 21st - February 28th">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
+            <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="intervalLabel" alignment="TOP_CENTER" text="Week of ">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <font>
+                        <Font name="Arial Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="dateRangeLabel" text="Date Range">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
             <ButtonBar prefHeight="100.0" prefWidth="700.0" HBox.hgrow="ALWAYS">
                <buttons>
-                  <Button mnemonicParsing="false" text="Today's Schedule" />
-                  <Button mnemonicParsing="false" text="Previous Week" />
-                  <Button mnemonicParsing="false" text="Next Week" />
-                  <Label alignment="CENTER" text="Week" />
-                  <ToggleButton fx:id="toggleView" mnemonicParsing="false" prefHeight="36.0" text="Toggle View" />
-                  <Label alignment="CENTER" text="Month" />
+                  <Button fx:id="todayButton" mnemonicParsing="false" onMouseClicked="#onTodayClicked" text="Today" />
+                  <Button fx:id="previousIntervalButton" mnemonicParsing="false" onMouseClicked="#onPreviousIntervalClicked" text="Previous Week" />
+                  <Button fx:id="nextIntervalButton" mnemonicParsing="false" onMouseClicked="#onNextIntervalClicked" text="Next Week" />
+                  <Label fx:id="weekIndicatorLabel" alignment="CENTER" text="Week" textFill="#495d94" underline="true">
+                     <font>
+                        <Font name="Arial Black" size="20.0" />
+                     </font></Label>
+                  <ToggleButton fx:id="toggleViewButton" mnemonicParsing="false" onMouseClicked="#onToggleClicked" prefHeight="36.0" text="Toggle View" />
+                  <Label fx:id="monthIndicatorLabel" alignment="CENTER" text="Month">
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font></Label>
                </buttons>
             </ButtonBar>
          </children>
@@ -75,9 +90,17 @@
       </TableView>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="300.0">
                <children>
-                  <Button fx:id="viewCustomers" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#onViewCustomersClicked" text="View Customers" />
+                  <Button fx:id="viewCustomers" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#onViewCustomersClicked" text="View Customers">
+                     <HBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </HBox.margin></Button>
+                  <Button fx:id="reportsButton" mnemonicParsing="false" onMouseClicked="#onReportsClicked" text="Reports">
+                     <HBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
