@@ -6,29 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="49164964-80c4-4c68-b53a-58b56cffed0f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddAppointmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddAppointmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddCustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AddCustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/AppointmentsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/CustomersController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/ReportsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/ReportsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateAppointmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateAppointmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateCustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/controller/UpdateCustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/ConnectionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/db_interface/DbManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Appointment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Contact.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Contact.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Country.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Country.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/FirstLevelDivision.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/FirstLevelDivision.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/Alerts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/Alerts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/TimeConversion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/uiManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/builditbear/utility/uiManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/pigeonApp_fr_FR.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dev/builditbear/updateAppointment.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dev/builditbear/updateAppointment.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
