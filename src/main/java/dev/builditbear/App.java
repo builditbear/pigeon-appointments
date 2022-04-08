@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * JavaFX App
+ * The entry point for this program.
  */
 public class App extends Application {
     private static final Locale locale = Locale.getDefault();
@@ -33,6 +33,10 @@ public class App extends Application {
         return locale;
     }
 
+    /**
+     * Retrieve the assigned resource bundle. It currently supports English and French for the login screen and all alerts.
+     * @return The assigned resource bundle.
+     */
     public static ResourceBundle getBundle() {
         return bundle;
     }

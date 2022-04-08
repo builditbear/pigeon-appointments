@@ -1,35 +1,31 @@
 package dev.builditbear.controller;
 
-import dev.builditbear.App;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Customer;
 import dev.builditbear.model.FirstLevelDivision;
 import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.uiManager;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * Handles user interaction with the customers screen.
+ */
 public class CustomersController implements Initializable {
     @FXML
     private TableView<Customer> customerTable;
@@ -68,18 +64,29 @@ public class CustomersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Populate the customerTable.
         ObservableList<Customer> customers = FXCollections.observableArrayList(DbManager.getAllCustomers());
-        populateCustomerTable(customers, customerTable, customerId, name, address, postalCode, phone, createDate,
+        configureCustomerTable(customers, customerTable, customerId, name, address, postalCode, phone, createDate,
                 createdBy, lastUpdate, lastUpdatedBy, firstLevelDivision);
     }
 
+    /**
+     * Resets the currently selected customer.
+     */
     public static void clearSelectedCustomer() {
         selectedCustomer = null;
     }
 
+    /**
+     * Returns the currently selected Customer.
+     * @return The currently selected Customer.
+     */
     public static Customer getSelectedCustomer() {
         return selectedCustomer;
     }
 
+    /**
+     * Removes whichever customer is currently selected in the TableView from both the database and the TableView.
+     * @param e The event generated when the user clicks on the delete button.
+     */
     @FXML
     private void onDeleteClicked(MouseEvent e) {
         Customer customer = customerTable.getSelectionModel().getSelectedItem();
@@ -88,6 +95,11 @@ public class CustomersController implements Initializable {
         Alerts.customerDeletedAlert(customer);
     }
 
+    /**
+     * Takes the user to the update customer screen for whichever customer is currently selected, or does nothing
+     * if no customer is selected.
+     * @param e The event generated when the user clicks on the Update button.
+     */
     @FXML
     private void onUpdateClicked(MouseEvent e) {
         selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -100,6 +112,10 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Brings the user to add customer screen.
+     * @param e The event generated when the user clicks on the Add button.
+     */
     @FXML
     private void onAddClicked(MouseEvent e) {
         try{
@@ -110,12 +126,27 @@ public class CustomersController implements Initializable {
         }
     }
 
-    private void populateCustomerTable(ObservableList<Customer> customers, TableView<Customer> customerTable,
-                                  TableColumn<Customer, Integer> customerId, TableColumn<Customer, String> name,
-                                  TableColumn<Customer, String> address, TableColumn<Customer, String> postalCode,
-                                  TableColumn<Customer, String> phone, TableColumn<Customer, LocalDateTime> createDate,
-                                  TableColumn<Customer, String> createdBy, TableColumn<Customer, Timestamp> lastUpdate,
-                                  TableColumn<Customer, String> lastUpdatedBy, TableColumn<Customer, String> firstLevelDivision) {
+    /**
+     * Assigns each column of the customer TableView to a field in the Customer objects the table holds.
+     * @param customers A List of all Customers to be shown in the table.
+     * @param customerTable The table that will hold the Customers for viewing.
+     * @param customerId The ID of a customer.
+     * @param name The full name of a customer
+     * @param address The address (excluding zipcode and first level division) of a customer.
+     * @param postalCode The postal code of a customer.
+     * @param phone The phone number of a customer.
+     * @param createDate The date a customer's record was created on.
+     * @param createdBy The user who created a customer's record.
+     * @param lastUpdate The date on which a customer's record was last modified.
+     * @param lastUpdatedBy The last user to modify a customer's record.
+     * @param firstLevelDivision The first level division a customer resides in.
+     */
+    private void configureCustomerTable(ObservableList<Customer> customers, TableView<Customer> customerTable,
+                                        TableColumn<Customer, Integer> customerId, TableColumn<Customer, String> name,
+                                        TableColumn<Customer, String> address, TableColumn<Customer, String> postalCode,
+                                        TableColumn<Customer, String> phone, TableColumn<Customer, LocalDateTime> createDate,
+                                        TableColumn<Customer, String> createdBy, TableColumn<Customer, Timestamp> lastUpdate,
+                                        TableColumn<Customer, String> lastUpdatedBy, TableColumn<Customer, String> firstLevelDivision) {
         customerTable.setItems(customers);
         customerId.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -133,6 +164,10 @@ public class CustomersController implements Initializable {
         });
     }
 
+    /**
+     * Brings the user to the appointments screen.
+     * @param e The event generated when the user clicks on the View Appointments button.
+     */
     @FXML
     private void onViewAppointmentsClicked(MouseEvent e) {
         try{

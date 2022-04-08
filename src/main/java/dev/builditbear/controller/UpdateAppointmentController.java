@@ -21,6 +21,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+/**
+ * Handles user interaction with the Update Appointment screen.
+ */
 public class UpdateAppointmentController implements Initializable {
     @FXML
     private TextField idField;
@@ -236,6 +239,11 @@ public class UpdateAppointmentController implements Initializable {
         });
     }
 
+    /**
+     * Retrieves new appointment start dates and disables and resets the appointment end dates to reflect a change
+     * in the selected date for which an appointment is being scheduled.
+     * @param e The event generated when the user changes the appointment date.
+     */
     @FXML
     private void onDateChanged(ActionEvent e) {
         LocalDate newlySelectedDate = datePicker.getValue();
@@ -246,6 +254,10 @@ public class UpdateAppointmentController implements Initializable {
         startComboBox.setItems(availableAppointmentTimes);
     }
 
+    /**
+     * Populates valid, corresponding appointment end times for the user to select from once a start date has been chosen.
+     * @param e The event generated when a new start time is selected.
+     */
     @FXML
     private void onStartChanged(ActionEvent e) {
         if(startComboBox.getValue() != null) {
@@ -257,6 +269,11 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Gathers new information for the appointment being updated, updates the appointment in the database accordingly,
+     * and then brings the user back to the appointments screen.
+     * @param e The event generated when the user clicks the update button.
+     */
     @FXML
     private void onUpdateClicked(MouseEvent e) {
         int id = Integer.parseInt(idField.getText());
@@ -279,14 +296,10 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
-    @FXML
-    private void onUserChanged(MouseEvent e) {
-        User newlySelectedUser = userIdComboBox.getValue();
-        ObservableList<LocalDateTime> availableAppointmentStartTimes =
-                FXCollections.observableArrayList(DbManager.getAvailableStartTimes(datePicker.getValue(), newlySelectedUser));
-        startComboBox.setItems(availableAppointmentStartTimes);
-    }
-
+    /**
+     * Returns the user to the appointment screen if the cancel button is clicked.
+     * @param e The event generated when the user clicks on the cancel button.
+     */
     @FXML
     private void onCancelButtonClicked(MouseEvent e) {
         try{

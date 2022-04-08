@@ -2,6 +2,9 @@ package dev.builditbear.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Defines the object representation of a user record in the SQL database.
+ */
 public class User {
     private int id;
     private String name;

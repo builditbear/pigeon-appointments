@@ -3,6 +3,9 @@ package dev.builditbear.model;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Defines the object representation of a customer record in the SQL database.
+ */
 public class Customer {
     private int id;
     private String name;

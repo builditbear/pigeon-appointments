@@ -1,5 +1,8 @@
 package dev.builditbear.model;
 
+/**
+ * Defines the object representation of a contact record in the SQL database.
+ */
 public class Contact {
     private int id;
     private String contactName;

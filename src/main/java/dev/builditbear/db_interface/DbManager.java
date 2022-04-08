@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.TimeZone;
+
+import static dev.builditbear.utility.TimeConversion.convertToTimeZone;
 
 /**
  * Handles the low level details of CRUD operations to and from the database.
@@ -41,7 +44,9 @@ public final class DbManager {
             PreparedStatement addRecord = connection.prepareStatement("INSERT INTO appointments VALUES " +
                     "(NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)");
             User appointmentCreator = ConnectionManager.getCurrentUser();
-            Object[] parameters = {title, description, location, type, Timestamp.valueOf(start), Timestamp.valueOf(end),
+            Object[] parameters = {title, description, location, type,
+                    Timestamp.valueOf(convertToTimeZone(start, TimeZone.getDefault().toZoneId(), ZoneId.of("UTC+00:00"))),
+                    Timestamp.valueOf(convertToTimeZone(end, TimeZone.getDefault().toZoneId(), ZoneId.of("UTC+00:00"))),
                     appointmentCreator.getName(), appointmentCreator.getName(), customerId, userId, contactId};
             for(int i = 1; i <= parameters.length; i++) {
                 addRecord.setObject(i, parameters[i - 1]);
@@ -107,6 +112,10 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves a List of all Contacts currently on record in the database.
+     * @return A current List of all Contacts on record.
+     */
     public static ArrayList<Contact> getAllContacts() {
         ArrayList<Contact> contacts = new ArrayList<>();
         try(ResultSet result = processQuery("SELECT * FROM contacts")) {
@@ -215,6 +224,10 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves a list of all First Level Divisions currently on record in the database.
+     * @return A current List of all First Level Divisions.
+     */
     public static ArrayList<FirstLevelDivision> getAllFirstLevelDivisions() {
         ArrayList<FirstLevelDivision> firstLevelDivisions = new ArrayList<>();
         try {
@@ -258,6 +271,11 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves an object representing a User record in the database corresponding to the given username.
+     * @param user The user's name.
+     * @return A new User object, or null if the user was not found.
+     */
     public static User getUser(String user) {
         Object[] parameters = {user};
         try(ResultSet result = processQuery("SELECT * FROM users WHERE User_Name = ?", parameters)){
@@ -273,6 +291,11 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves an object representing a User record in the database corresponding to the given ID.
+     * @param id The ID of the user in question.
+     * @return A new User object.
+     */
     public static User getUser(int id) {
         Object[] parameters = {id};
         try(ResultSet result = processQuery("SELECT * FROM users WHERE User_ID = ?", parameters)) {
@@ -288,6 +311,10 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves a List of all Users currently on record in the database.
+     * @return A list of all Users currently on record in the database.
+     */
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         try(ResultSet result = processQuery("SELECT * FROM users")) {
@@ -305,8 +332,12 @@ public final class DbManager {
         }
     }
 
-
-
+    /**
+     * Creates a new User object based on the information contained within a given resultSet. The set is assumed to contain
+     * the results of a User record query, with the ResultSet's get pointer already pointing to the appropriate row.
+     * @param queryResult A ResultSet containing and pointing to the results of a select query.
+     * @return A new User object.
+     */
     private static User createUser(ResultSet queryResult){
         try {
             int id = queryResult.getInt(1);
@@ -578,6 +609,20 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Updates the record corresponding to the given appointmentId in the database with the provided information.
+     * @param appointmentId The ID of the appointment record to be updated.
+     * @param title The appointment's title.
+     * @param description A description of the appointment.
+     * @param location The location where the appointment is to be held.
+     * @param type Describes the kind of appointment taking place.
+     * @param start The appointment's start time and date in the user's local timezone.
+     * @param end The appointment's end time and date in the user's local timezone.
+     * @param customerId The ID of the customer associated with this appointment.
+     * @param userId The ID of the user associated with this appointment.
+     * @param contactId The ID of the contact associated with this appointment.
+     * @return 1 if the update operation was successful, and 0 otherwise.
+     */
     public static int updateAppointment(int appointmentId, String title, String description, String location, String type,
                                         LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
         Object[] parameters = {title, description, location, type, Timestamp.valueOf(start), Timestamp.valueOf(end),
@@ -622,6 +667,13 @@ public final class DbManager {
         return query.executeQuery();
     }
 
+    /**
+     * Sets up and executes an update to the SQL database via a SQL prepared statement described by the String passed in.
+     * @param updateString The SQL update statement to be executed.
+     * @param parameters Any variables that the statement must be populated with prior to execution.
+     * @return An integer describing the amount of record that were updated as a result of the statement's execution.
+     * @throws SQLException Thrown in the event of a communication error with the SQL server.
+     */
     private static int processUpdate(String updateString, Object[] parameters) throws SQLException {
         Connection connection = ConnectionManager.getConnection();
         PreparedStatement query = connection.prepareStatement(updateString);
@@ -684,9 +736,9 @@ public final class DbManager {
      * @return A LocalDateTime object in the local timezone defining the time the business opens on the given date.
      */
     public static LocalDateTime generateBusinessOpen(LocalDate date) {
-        return TimeConversion.toLocalTimeZone(
+        return convertToTimeZone(
                 LocalDateTime.of(date, AppointmentsController.getBusinessOpen()),
-                AppointmentsController.getBusinessTimezone());
+                AppointmentsController.getBusinessTimezone(), TimeZone.getDefault().toZoneId());
     }
 
     /**
@@ -696,11 +748,17 @@ public final class DbManager {
      * @return A LocalDateTime object in the local timezone defining the time the business closes on the given date.
      */
     public static LocalDateTime generateBusinessClose(LocalDate date) {
-        return TimeConversion.toLocalTimeZone(
+        return convertToTimeZone(
                 LocalDateTime.of(date, AppointmentsController.getBusinessClose()),
-                AppointmentsController.getBusinessTimezone());
+                AppointmentsController.getBusinessTimezone(), TimeZone.getDefault().toZoneId());
     }
 
+    /**
+     * Determines if the given appointment start time overlaps with any existing appointment already in the database.
+     * @param bookedAppointments A List of all appointments currently in the database.
+     * @param appointmentStart The proposed appointment start time.
+     * @return True if the appointment overlaps with at least one of the appointments already scheduled, and False otherwise.
+     */
     private static boolean startTimeOverlaps(ArrayList<Appointment> bookedAppointments,
                                              LocalDateTime appointmentStart) {
         for(Appointment bookedAppointment : bookedAppointments) {
@@ -712,6 +770,14 @@ public final class DbManager {
         return false;
     }
 
+    /**
+     * Determines whether or not the given appointment end time, considering the appointment start time,
+     * causes the appointment to overlap with any already scheduled appointments in the database.
+     * @param bookedAppointments
+     * @param appointmentStart
+     * @param appointmentEnd
+     * @return True if the proposed end time would cause a scheduling conflict, and False otherwise.
+     */
     private static boolean endTimeOverlaps(ArrayList<Appointment> bookedAppointments,
                                            LocalDateTime appointmentStart, LocalDateTime appointmentEnd) {
         for(Appointment bookedAppointment : bookedAppointments) {
@@ -722,6 +788,15 @@ public final class DbManager {
         return false;
     }
 
+    /**
+     * Given a proposed appointment start and end time for a customer, this function determines whether or not that customer
+     * will become double booked if the appointment is scheduled.
+     * @param appointmentStart The proposed appointment start time.
+     * @param appointmentEnd The proposed appointment end time.
+     * @param customer The customer for which the appointment is to be scheduled.
+     * @return True if the customer would be double booked by scheduling them for an appointment with the given start and
+     * end times, and False otherwise.
+     */
     public static boolean customerBeingDoubleBooked(LocalDateTime appointmentStart, LocalDateTime appointmentEnd, Customer customer) {
         ArrayList<Appointment> bookedAppointments = getCustomersBookedAppointments(customer);
         return startTimeOverlaps(bookedAppointments, appointmentStart) ||
@@ -778,6 +853,11 @@ public final class DbManager {
         }
     }
 
+    /**
+     * Retrieves a List of all appointments associated with a given Customer.
+     * @param customer The customer for which we want a list of appointments.
+     * @return A List containing all the customer's appointment in the database.
+     */
     public static ArrayList<Appointment> getCustomersBookedAppointments(Customer customer) {
         ArrayList<Appointment> bookedAppointments = new ArrayList<>();
         Object[] parameters = {customer.getId()};

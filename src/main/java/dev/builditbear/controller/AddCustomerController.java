@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Handles user interaction with the add customer screen.
+ */
 public class AddCustomerController implements Initializable {
     @FXML
     private TextField nameField;
@@ -66,6 +69,11 @@ public class AddCustomerController implements Initializable {
 
     }
 
+    /**
+     * Adjusts the shown first level divisions based on the currently selected country, such that only first level divisions
+     * in that country are available for selection.
+     * @param e The event generated when the user changes the selected country.
+     */
     @FXML
     private void onCountryChange(ActionEvent e) {
         String newCountry = countryComboBox.getValue();
@@ -75,6 +83,11 @@ public class AddCustomerController implements Initializable {
         }
     }
 
+    /**
+     * Gathers the new customer's info from the form's fields, adds the new customer to the database, and then returns
+     * the user to the customers screen.
+     * @param e The event generated when the user clicks on the Add buttong.
+     */
     @FXML
     private void onAddButtonClicked(MouseEvent e) {
         DbManager.addCustomer(nameField.getText(), addressField.getText(), postalCode.getText(),
@@ -82,12 +95,16 @@ public class AddCustomerController implements Initializable {
         try {
             uiManager.loadScene("customers", (Stage) addButton.getScene().getWindow(), "1200x800");
         } catch(IOException ex) {
-            System.out.println("An IOException occurred in method onCancelButtonClicked. " +
+            System.out.println("An IOException occurred in method onAddButtonClicked. " +
                     "Please make sure the view you are attempting to load exits.");
         }
 
     }
 
+    /**
+     * Returns the user to the customers screen.
+     * @param e The event created by the user clicking on the Cancel buttong.
+     */
     @FXML
     private void onCancelButtonClicked(MouseEvent e) {
         try{

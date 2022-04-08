@@ -18,15 +18,6 @@ public final class TimeConversion {
     public static final DateTimeFormatter showTimezone= DateTimeFormatter.ofPattern("hh:mm:ss a z");
 
     /**
-     * Converts a given LocalDateTime object's time into a formatted String in UTC time.
-     * @param ldt A LocalDateTime object used to generate the formatted output String.
-     * @return A String describing the time represented by ldt in the format "hh:mm:ss a", where "a" is AM or PM.
-     */
-    public static String printUTCTime(LocalDateTime ldt) {
-        return ldt.atZone(ZoneOffset.ofHours(-8)).format(standardDateAndTime.withZone(ZoneOffset.UTC));
-    }
-
-    /**
      * Converts a given LocalDateTime object's time into a formatted String depicting the local time and timezone.
      * @param ldt A LocalDateTime object used to generate the formatted output String.
      * @return A String describing the local time represented by ldt in the format "hh:mm:ss a z", where "a" is AM or PM,
@@ -37,27 +28,33 @@ public final class TimeConversion {
         return zdt.format(showTimezone);
     }
 
+    /**
+     * Converts a timestamp pulled from the database into a LocalDateTime set for the same point in time in the user's timezone.
+     * @param timestamp The timestamp pulled from the database.
+     * @return A new LocalDateTime object representing the same point in time, but in the user's local timezone.
+     */
     public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
-        return timestamp.toLocalDateTime();
-    }
-
-    public static Timestamp localDateTimeToTimestamp(LocalDateTime ldt) {
-        return Timestamp.valueOf(ldt);
+        return convertToTimeZone(timestamp.toLocalDateTime(), ZoneId.of("UTC+00:00"), TimeZone.getDefault().toZoneId());
     }
 
     /**
-     * Converts the provided time and date at the given timezone into the equivalent time and date at the user's local timezone.
-     * @param foreignTime A time and date at some timezone other than the user's local timezone.
-     * @param zoneId The Timezone ID for the date and time of day described by foreignTime.
-     * @return A LocalDateTime object representing the same point in time as the LocalDateTime passed in, but at the user's
-     * local timezone.
+     * Converts the provided time and date at the given timezone into the equivalent time and date at another timezone.
+     * @param originTime A time and date at some timezone.
+     * @param originZoneId The Timezone ID for the date and time of day described by originTime.
+     * @param targetZoneId The Timezone ID for which we would like to get an equivalent time and date for.
+     * @return A LocalDateTime object representing the same point in time as the LocalDateTime and origin TimeZone passed in, but at the
+     * specified target timezone.
      */
-    public static LocalDateTime toLocalTimeZone(LocalDateTime foreignTime, ZoneId zoneId) {
-        ZonedDateTime zonedForeignTime = foreignTime.atZone(zoneId);
-        ZonedDateTime zonedLocalTime = zonedForeignTime.withZoneSameInstant(TimeZone.getDefault().toZoneId());
-        return zonedLocalTime.toLocalDateTime();
+    public static LocalDateTime convertToTimeZone(LocalDateTime originTime, ZoneId originZoneId, ZoneId targetZoneId) {
+        ZonedDateTime zonedOriginTime = originTime.atZone(originZoneId);
+        ZonedDateTime zonedDestinationTime = zonedOriginTime.withZoneSameInstant(targetZoneId);
+        return zonedDestinationTime.toLocalDateTime();
     }
 
+    /**
+     * Finds the date on which today's month begins.
+     * @return The first day of today's month.
+     */
     public static LocalDate getMonthStartDate() {
         LocalDate date = LocalDate.now();
         while(date.getDayOfMonth() != 1) {
@@ -66,6 +63,11 @@ public final class TimeConversion {
         return date;
     }
 
+    /**
+     * Finds the date on which a given date's month begins.
+     * @param date The date to find the first of the month for.
+     * @return The first day of the given date's month.
+     */
     public static LocalDate getMonthStartDate(LocalDate date) {
         while(date.getDayOfMonth() != 1) {
             date = date.minusDays(1);
@@ -73,6 +75,10 @@ public final class TimeConversion {
         return date;
     }
 
+    /**
+     * Finds the date on which today's week begins.
+     * @return The first day of today's week.
+     */
     public static LocalDate getWeekStartDate() {
         LocalDate date = LocalDate.now();
         while(date.getDayOfWeek() != DayOfWeek.SUNDAY) {
@@ -81,6 +87,11 @@ public final class TimeConversion {
         return date;
     }
 
+    /**
+     * Finds the date on which a given date's week begins.
+     * @param date The date to find the first day of the week for.
+     * @return The day on which the given date's week begins.
+     */
     public static LocalDate getWeekStartDate(LocalDate date) {
         while(date.getDayOfWeek() != DayOfWeek.SUNDAY) {
             date = date.minusDays(1);

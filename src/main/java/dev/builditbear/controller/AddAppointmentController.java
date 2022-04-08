@@ -25,6 +25,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+/**
+ * Handles user interaction with the Add Appointment screen.
+ */
 public class AddAppointmentController implements Initializable {
     @FXML
     private TextField titleField;
@@ -164,6 +167,10 @@ public class AddAppointmentController implements Initializable {
         customerIdComboBox.setCellFactory(customerNameAndIdDisplayingCellFactory);
     }
 
+    /**
+     * Adjusts the appointment start times and disabled the appointment end times to match a newly selected date.
+     * @param e The event generated when the user picks a new date for the appointment.
+     */
     @FXML
     private void onDateChanged(ActionEvent e) {
         LocalDate newlySelectedDate = datePicker.getValue();
@@ -174,6 +181,10 @@ public class AddAppointmentController implements Initializable {
         startComboBox.setItems(availableAppointmentTimes);
     }
 
+    /**
+     * Alters the appointment end times to match the selected appointment start time.
+     * @param e The event created when the user selects an appointment start time.
+     */
     @FXML
     private void onStartChanged(ActionEvent e) {
         if(startComboBox.getValue() != null) {
@@ -185,6 +196,10 @@ public class AddAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Filters the appointment start times to reflect a change in the selected user.
+     * @param e The event generated when the user changes the user associated with this appointment.
+     */
     @FXML
     private void onUserChanged(ActionEvent e) {
         User newlySelectedUser = userIdComboBox.getValue();
@@ -227,6 +242,10 @@ public class AddAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Returns the user to the appointment screen.
+     * @param e The event generated when the user clicks on the Cancel button.
+     */
     @FXML
     private void onCancelButtonClicked(MouseEvent e) {
         try{

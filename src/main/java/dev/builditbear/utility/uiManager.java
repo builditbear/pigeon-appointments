@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Provides wrappers for common scene/stage swapping functionality.
+ */
 public final class uiManager {
     private uiManager() {
         throw new RuntimeException("Instantiation of uiManager is not allowed.");

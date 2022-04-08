@@ -28,6 +28,9 @@ import java.time.*;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
+/**
+ * Handles user interaction with the appointments screen.
+ */
 public class AppointmentsController implements Initializable {
     // Business hours in Eastern Standard Time.
     private static final LocalTime businessOpen = LocalTime.of(8, 0);
@@ -109,6 +112,19 @@ public class AppointmentsController implements Initializable {
         dateRangeLabel.setText(weekStart.format(TimeConversion.standardDate) + " - " + weekEnd.format(TimeConversion.standardDate));
     }
 
+    /**
+     * Assigns each column of a TableView to an appropriate field in the Appointment object which the TableView holds.
+     * @param appointmentId The appointment's ID.
+     * @param title The appointment's title.
+     * @param description A brief description of the appointment.
+     * @param location Where the appointment is being held.
+     * @param contact The contact person for this appointment.
+     * @param type The kind of appointment.
+     * @param start The start time and date for this appointment in the user's local time zone.
+     * @param end The end time and date for this appointment in the user's local time zone.
+     * @param customerId The customer ID associated with this appointment.
+     * @param userId The user ID associated with this appointment.
+     */
     private void configureAppointmentsTable(TableColumn<Appointment, Integer> appointmentId, TableColumn<Appointment, String> title,
                                             TableColumn<Appointment, String> description, TableColumn<Appointment, String> location,
                                             TableColumn<Appointment, String> contact, TableColumn<Appointment, String> type,
@@ -136,6 +152,11 @@ public class AppointmentsController implements Initializable {
         userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
     }
 
+    /**
+     * Resets the currently shown time period to whichever week or month (depending on what view is toggled) today's
+     * date falls under.
+     * @param e The event generated when the user clicks on the Today button.
+     */
     @FXML
     private void onTodayClicked(MouseEvent e) {
         resetToToday();
@@ -143,6 +164,11 @@ public class AppointmentsController implements Initializable {
         displayedAppointments.setPredicate(monthViewToggled ? this::appointmentInDisplayedMonth : this::appointmentInDisplayedWeek);
     }
 
+    /**
+     * Shows the schedule for the next week or month (depending on what view is toggled), updating the date range labels
+     * and shown appointments accordingly.
+     * @param e The event generated when the user clicks on the Next Week/Month button.
+     */
     @FXML
     private void onNextIntervalClicked(MouseEvent e) {
         nextTimeInterval();
@@ -150,6 +176,11 @@ public class AppointmentsController implements Initializable {
         displayedAppointments.setPredicate(monthViewToggled ? this::appointmentInDisplayedMonth : this::appointmentInDisplayedWeek);
     }
 
+    /**
+     * Shows the schedule for the previous week or month (depending on what view is toggled), updating the date range labels
+     * and show appointments accordingly.
+     * @param e The event generated when the user clicks on the Previous Week/Month button.
+     */
     @FXML
     private void onPreviousIntervalClicked(MouseEvent e) {
         previousTimeInterval();
@@ -157,6 +188,10 @@ public class AppointmentsController implements Initializable {
         displayedAppointments.setPredicate(monthViewToggled ? this::appointmentInDisplayedMonth : this::appointmentInDisplayedWeek);
     }
 
+    /**
+     * Switches the current displayed interval of time between week and month, and updates the UI accordingly.
+     * @param e The event generated when the user clicks on the Toggle View button.
+     */
     @FXML
     private void onToggleClicked(MouseEvent e) {
         if(monthViewToggled) {
@@ -176,6 +211,10 @@ public class AppointmentsController implements Initializable {
         setControlLabels();
     }
 
+    /**
+     * Takes the user to the customers screen.
+     * @param e The event generated when the user clicks on the View Customers button.
+     */
     @FXML
     private void onViewCustomersClicked(MouseEvent e) {
         try{
@@ -185,6 +224,10 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Takes the user to the reports screen.
+     * @param e The event generated when the user clicks on the reports button.
+     */
     @FXML
     private void onReportsClicked(MouseEvent e) {
         try{
@@ -195,6 +238,10 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Takes the user to the add appointment screen.
+     * @param e The event made when the user clicks on the Add button.
+     */
     @FXML
     private void onAddClicked(MouseEvent e) {
         try{
@@ -205,6 +252,11 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Takes the user to the update appointment screen for whichever appointment is selected in the TableView at that time,
+     * or does nothing if no appointment is selected.
+     * @param e The event generated when the user clicks on the update button.
+     */
     @FXML
     private void onUpdateClicked(MouseEvent e) {
         selectedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
@@ -218,6 +270,11 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Deletes whichever appointment is currently selected in the TableView from both the database and the TableView, or
+     * does nothing if no appointment is selected.
+     * @param e The event generated when the user clicks on the Delete button.
+     */
     @FXML
     private void onDeleteClicked(MouseEvent e) {
         Appointment appointment = appointmentsTable.getSelectionModel().getSelectedItem();
@@ -230,28 +287,50 @@ public class AppointmentsController implements Initializable {
         updateDisplayedAppointments(monthViewToggled ? this::appointmentInDisplayedMonth : this::appointmentInDisplayedWeek);
     }
 
+    /**
+     * Get the length of the month under which the given date falls.
+     * @param d A day and month.
+     * @return The length of the date's month.
+     */
     private int getMonthLength(LocalDate d) {
         return d.getMonth().length(d.isLeapYear());
     }
 
+    /**
+     * Determines if the given appointment is in the currently shown week.
+     * @param appointment The appointment in question.
+     * @return True if the appointment is in the currently displayed week, and False otherwise.
+     */
     private boolean appointmentInDisplayedWeek(Appointment appointment) {
         LocalDate appointmentDate = appointment.getStart().toLocalDate();
         return (appointmentDate.isEqual(weekStart) || appointmentDate.isAfter(weekStart)) &&
                 (appointmentDate.isBefore(weekEnd) || appointmentDate.isEqual(weekEnd));
     }
 
+    /**
+     * Determiens if the given appointment is in the currently displayed month.
+     * @param appointment The appointment in question.
+     * @return True if the appointment is in the currently displayed month, and False otherwise.
+     */
     private boolean appointmentInDisplayedMonth(Appointment appointment) {
         LocalDate appointmentDate = appointment.getStart().toLocalDate();
         return (appointmentDate.isEqual(monthStart) || appointmentDate.isAfter(monthStart)) &&
                 (appointmentDate.isBefore(monthEnd) || appointmentDate.isBefore(monthEnd));
     }
 
+    /**
+     * Resets the controller's internal representation of the displayed week and month to correspond to today's week and month.
+     */
     private void resetToToday() {
         weekStart = TimeConversion.getWeekStartDate();
         weekEnd = weekStart.plusDays(6);
         monthStart = TimeConversion.getMonthStartDate();
         monthEnd = monthStart.plusDays(getMonthLength(monthStart) - 1);
     }
+
+    /**
+     * Increments the controller's internal representation of the displayed week or month.
+     */
     private void nextTimeInterval() {
         if(monthViewToggled) {
             monthStart = monthStart.plusDays(getMonthLength(monthStart));
@@ -262,6 +341,9 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Decrements the controller's internal representation of the displayed week or month.
+     */
     private void previousTimeInterval() {
         if(monthViewToggled) {
             monthStart = monthStart.minusDays(getMonthLength(monthStart));
@@ -272,6 +354,9 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Adjust the label depicting the currently shown interval of time to match updated time interval.
+     */
     private void setDateRangeLabel() {
         if(monthViewToggled) {
             dateRangeLabel.setText(monthStart.format(TimeConversion.standardDate) + " - " + monthEnd.format(TimeConversion.standardDate));
@@ -280,6 +365,9 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Adjusts the labels for selecting the next or previous interval of time based on the current view mode.
+     */
     private void setControlLabels() {
         if(monthViewToggled) {
             previousIntervalButton.setText("Previous Month");
@@ -292,12 +380,19 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Updates the currently shown appointments based on a provided filter.
+     * @param filter A predicate describing how to filter appointments.
+     */
     private void updateDisplayedAppointments(Predicate<Appointment> filter) {
         displayedAppointments = new FilteredList<>(
                 FXCollections.observableArrayList(DbManager.getAllAppointments()), filter);
         appointmentsTable.setItems(displayedAppointments);
     }
 
+    /**
+     * Change the styling of the Week and Month labels to indicate that the Week view is active.
+     */
     private void indicateWeekViewActive() {
         monthIndicatorLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 13));
         monthIndicatorLabel.setTextFill(Color.BLACK);
@@ -307,6 +402,9 @@ public class AppointmentsController implements Initializable {
         weekIndicatorLabel.setUnderline(true);
     }
 
+    /**
+     * Change the styling of the Week and Month labels to indicate that the Month view is active.
+     */
     private void indicateMonthViewActive() {
         weekIndicatorLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 13));
         weekIndicatorLabel.setTextFill(Color.BLACK);

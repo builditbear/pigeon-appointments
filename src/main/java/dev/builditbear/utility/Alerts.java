@@ -7,6 +7,10 @@ import javafx.scene.control.Alert;
 
 import static dev.builditbear.utility.TimeConversion.standardDateAndTime;
 
+/**
+ * Describes alerts used for relaying important information to the program's users. They currently support English and
+ * French, and will automatically use the default language on the user's computer.
+ */
 public final class Alerts {
 
     private Alerts(){

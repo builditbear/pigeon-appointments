@@ -4,17 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import dev.builditbear.App;
 import dev.builditbear.db_interface.ConnectionManager;
 import dev.builditbear.db_interface.DbManager;
 import dev.builditbear.model.Appointment;
@@ -23,11 +16,9 @@ import dev.builditbear.utility.Alerts;
 import dev.builditbear.utility.TimeConversion;
 import dev.builditbear.utility.uiManager;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -134,6 +125,12 @@ public class LoginController implements Initializable{
 
     }
 
+    /**
+     * Determines whether or not the given user has any upcoming appointments taking place in the next 15 minutes.
+     * @param user The user who is logging in.
+     * @return The earliest appointment taking place in the next 15 minutes, and null if no appointments take place in
+     * the next 15 minutes.
+     */
     private Appointment appointmentWithinFifteenMinutes(User user) {
         ArrayList<Appointment> appointments = DbManager.getUsersBookedAppointments(user);
         for(Appointment appointment : appointments) {
@@ -144,6 +141,11 @@ public class LoginController implements Initializable{
         }
         return null;
     }
+
+    /**
+     * Logs all login attempts to a txt file found in the root directory of this program by default.
+     * @param loginSuccessful Whether or not the login attempt in question succeeded.
+     */
     private void logAuthenticationAttempt(boolean loginSuccessful) {
         try {
             File logFile = new File("login_activity.txt");

@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Defines the object representation of a first level division record in the SQL database.
+ */
 public class FirstLevelDivision {
     private final int id;
     private final String division;

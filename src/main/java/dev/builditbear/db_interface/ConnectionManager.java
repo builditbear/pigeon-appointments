@@ -9,6 +9,9 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+/**
+ * Handles connecting to the database, the connection itself, and basic user authentication and logging protocol.
+ */
 public final class ConnectionManager {
     private ConnectionManager() {
         throw new RuntimeException("Instantiation of ConnectionManager is not allowed.");
