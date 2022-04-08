@@ -1,10 +1,13 @@
 package dev.builditbear.controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -111,6 +114,7 @@ public class LoginController implements Initializable{
         boolean authenticationSuccessful = ConnectionManager.authenticateLogin(username, password);
 
         if(authenticationSuccessful) {
+            logAuthenticationAttempt(true);
             Appointment upcomingAppointment = appointmentWithinFifteenMinutes(ConnectionManager.getCurrentUser());
             if(upcomingAppointment != null) {
                 Alerts.appointmentImminent(upcomingAppointment);
@@ -124,6 +128,8 @@ public class LoginController implements Initializable{
                                    "Make sure that the view you're attempting to load exists.");
                 System.out.println(ex.getMessage());
             }
+        } else {
+            logAuthenticationAttempt(false);
         }
 
     }
@@ -138,7 +144,21 @@ public class LoginController implements Initializable{
         }
         return null;
     }
-
-
-
+    private void logAuthenticationAttempt(boolean loginSuccessful) {
+        try {
+            File logFile = new File("login_activity.txt");
+            if(logFile.createNewFile()) {
+                System.out.println("No log file detected. New log file created.");
+            }
+            LocalDateTime loginTime = LocalDateTime.now();
+            FileWriter logger = new FileWriter("login_activity.txt", true);
+            logger.write("\nUser '" + userField.getText() + "'" + (loginSuccessful ? " successfully" : " unsuccessfully") +
+                    " attempted to log in on " + loginTime.format(TimeConversion.standardDate) + " @ " +
+                    Timestamp.valueOf(loginTime));
+            logger.close();
+        } catch(IOException ex) {
+            System.out.println("An IOException occurred in method logAuthenticationAttempt:");
+            System.out.println(ex.getMessage());
+        }
+    }
 }
