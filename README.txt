@@ -1,6 +1,7 @@
 Pigeon Appointments is a GUI based desktop application meant for scheduling and tracking both appointments and clients,
 with consideration given to users operating in timezones across the globe and using different languages (although the
 initial release only supports English and French on a limited scale).
+- Project Github Page: https://github.com/builditbear/pigeon-appointments
 
 - Author: Brandon Chavez
 - Author Contact Info: bchav23@wgu.edu or brandon.nan.chavez@gmail.com
